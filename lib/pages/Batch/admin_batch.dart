@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/pages/Batch/add_batch.dart';
 import 'package:learning_admin_app/pages/Batch/edit_batch.dart';
 import 'package:learning_admin_app/provider/batch_provider.dart';
 import 'package:learning_admin_app/provider/request_provider.dart';
+import 'package:learning_admin_app/utils/app_snackbar.dart';
 import 'package:learning_admin_app/widgets/Cards/edit_batch_card.dart';
 
 class Adminbatch extends ConsumerStatefulWidget {
@@ -104,7 +106,82 @@ class _AdminbatchState extends ConsumerState<Adminbatch> {
                           final code = await ref
                               .read(batchCodeProvider.notifier)
                               .generateCode();
-                          print(code);
+
+                          if (!context.mounted) return;
+
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                title: const Text(
+                                  "Referral Code",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Card(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.tertiary,
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 10,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: SelectableText(
+                                                code ?? "No code generated",
+                                                style: const TextStyle(
+                                                  fontSize: 18,
+                                                  letterSpacing: 2,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+
+                                            IconButton(
+                                              onPressed: () async {
+                                                await Clipboard.setData(
+                                                  ClipboardData(
+                                                    text: code.toString(),
+                                                  ),
+                                                );
+
+                                                Navigator.pop(context);
+
+                                                AppSnackBar.show(
+                                                  context,
+                                                  type: SnackType.success,
+                                                  message:
+                                                      "Code copied to clipboard",
+                                                );
+                                              },
+                                              icon: Icon(
+                                                Icons.copy,
+                                                color: Theme.of(
+                                                  context,
+                                                ).colorScheme.secondary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
                         },
                         onDelete: () async {
                           final confirm = await showModalBottomSheet<bool>(

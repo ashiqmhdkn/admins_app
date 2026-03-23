@@ -41,6 +41,7 @@ class _RegisterState extends ConsumerState<RegisterPage> {
     final authState = ref.watch(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: const Text(
           "Register",
           style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),

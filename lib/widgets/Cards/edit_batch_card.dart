@@ -43,26 +43,21 @@ class EditBatchCard extends StatelessWidget {
                       right: 8,
                       child: Row(
                         children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.edit,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            onPressed: onEdit,
-                            splashRadius: 20,
+                          circleActionButton(
+                            icon: Icons.edit,
+                            onTap: onTap,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: onDelete,
-                            splashRadius: 20,
+                          circleActionButton(
+                            icon: Icons.delete,
+                            onTap: onDelete,
+                            color: Colors.red,
                           ),
-                          IconButton(
-                            icon: const Icon(
-                              Icons.sports_handball,
-                              color: Colors.blue,
-                            ),
-                            onPressed: onGenerate,
-                            splashRadius: 20,
+
+                          circleActionButton(
+                            icon: Icons.sports_handball,
+                            onTap: onGenerate,
+                            color: Colors.blue,
                           ),
                         ],
                       ),
@@ -88,4 +83,22 @@ class EditBatchCard extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget circleActionButton({
+  required IconData icon,
+  required VoidCallback onTap,
+  required Color color,
+}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.grey.withOpacity(0.92),
+        shape: BoxShape.circle,
+      ),
+      child: Icon(icon, color: color, size: 20),
+    ),
+  );
 }

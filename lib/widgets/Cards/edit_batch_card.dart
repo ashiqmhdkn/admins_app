@@ -45,7 +45,7 @@ class EditBatchCard extends StatelessWidget {
                         children: [
                           circleActionButton(
                             icon: Icons.edit,
-                            onTap: onTap,
+                            onTap: onEdit,
                             color: Theme.of(context).colorScheme.secondary,
                           ),
                           circleActionButton(

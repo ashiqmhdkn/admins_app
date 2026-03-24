@@ -10,7 +10,7 @@ class AdminStaffList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final roles = ["Teacher", "Mentor", "Coordinator", "Collaborator"];
+    final roles = ["Teacher", "Mentor", "students",];
 
     final List<Staff> staffList = List.generate(
       20,

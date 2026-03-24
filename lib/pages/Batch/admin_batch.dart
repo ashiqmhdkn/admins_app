@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/pages/Batch/add_batch.dart';
 import 'package:learning_admin_app/pages/Batch/edit_batch.dart';
 import 'package:learning_admin_app/provider/batch_provider.dart';
@@ -260,7 +261,7 @@ class _AdminbatchState extends ConsumerState<Adminbatch> {
                         },
                         onTap: () {
                           // Navigate to lessons page
-                          // context.push('/adminbatchs/${batch.name}',extra: batch.batch_id);
+                          context.push('/batchdetails',extra: batch);
                         },
                       ),
                     ),

@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:learning_admin_app/models/batch_model.dart';
 import 'package:learning_admin_app/models/user_model.dart';
+import 'package:learning_admin_app/pages/Batch/batch_details.dart';
 import 'package:learning_admin_app/pages/Profile/update_profile.dart';
 import 'package:learning_admin_app/pages/Units/admin_units.dart';
 import 'package:learning_admin_app/pages/admin_nav_bar.dart';
@@ -13,7 +15,10 @@ final router = GoRouter(
   initialLocation: "/splash",
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
-    GoRoute(path: "/login", builder: (context, state) => const LoginPage()),
+    GoRoute(path: "/login", builder: (context, state) => const LoginPage()),  
+    GoRoute(path: "/batchdetails", builder: (context, state){ 
+      final batch=state.extra as Batch; 
+      return BatchDetails(batch: batch);}),
     GoRoute(
       path: "/register",
       builder: (context, state) => const RegisterPage(),

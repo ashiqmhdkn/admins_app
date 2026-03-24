@@ -1,9 +1,8 @@
-import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
-import 'package:learning_admin_app/pages/Batch/widget/studentrequest.dart';
-import 'package:learning_admin_app/pages/Batch/widget/teacherrequest.dart';
+import 'package:learning_admin_app/pages/Batch/widget/subject_list.dart';
+import 'package:learning_admin_app/widgets/Custom/custom_primary_text.dart';
 
 class BatchDetails extends StatefulWidget {
   final Batch batch;
@@ -36,6 +35,7 @@ class _BatchDetailsState extends State<BatchDetails> {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: Text(
           widget.batch.name,
           style: const TextStyle(fontWeight: FontWeight.bold),
@@ -50,152 +50,84 @@ class _BatchDetailsState extends State<BatchDetails> {
             ),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CustomSlidingSegmentedControl<int>(
-                initialValue: _selectedIndex,
-                children: const {
-                  0: const Text("students"),
-                  1: const Text("Teachers"),
-                },
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.tertiary,
+      ),
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 13,
+                mainAxisSpacing: 12,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildGridItem(
+                    context,
+                    title: "Students",
+                    icon: Icons.people,
+                    onTap: () {
+                      context.push('/batch/students', extra: widget.batch);
+                    },
                   ),
-                ),
-                thumbDecoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                onValueChanged: (value) {
-                  setState(() {
-                    _selectedIndex = value;
-                  });
-
-                  _pageController.animateToPage(
-                    value,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
+                  _buildGridItem(
+                    context,
+                    title: "Teachers",
+                    icon: Icons.school,
+                    onTap: () {
+                      context.push('/batch/teachers', extra: widget.batch);
+                    },
+                  ),
+                ],
               ),
             ),
-          ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Customprimarytext(text: "Subjects", fontValue: 17),
+            ),
+
+            SubjectList(),
+          ],
         ),
       ),
-      body: PageView(
-        controller: _pageController,
-        physics: const BouncingScrollPhysics(),
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        children: [
-          StudentsTabWrapper(
-            batchId: widget.batch.batchId,
-            batchName: widget.batch.name,
-          ),
-          TeachersTabWrapper(
-            batchId: widget.batch.batchId,
-            batchName: widget.batch.name,
-          ),
-        ],
-      ),
     );
   }
 }
 
-class StudentsTabWrapper extends StatelessWidget {
-  final String batchId;
-  final String batchName;
+Widget _buildGridItem(
+  BuildContext context, {
+  required String title,
+  required IconData icon,
+  required VoidCallback onTap,
+}) {
+  final colorScheme = Theme.of(context).colorScheme;
 
-  const StudentsTabWrapper({
-    super.key,
-    required this.batchId,
-    required this.batchName,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      decoration: BoxDecoration(
+        color: colorScheme.tertiary,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: colorScheme.tertiary),
+        boxShadow: [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 3)),
+        ],
+      ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const TabBar(
-            tabs: [
-              Tab(text: "Requests"),
-              Tab(text: "Accepted"),
-            ],
-          ),
-
-          Expanded(
-            child: TabBarView(
-              children: [
-                BatchRequestsScreen(batchId: batchId, batchName: batchName),
-                StudentAcceptedPlaceholder(),
-              ],
-            ),
+          Icon(icon, size: 40, color: colorScheme.primary),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
         ],
       ),
-    );
-  }
-}
-
-class TeachersTabWrapper extends StatelessWidget {
-  final String batchId;
-  final String batchName;
-
-  const TeachersTabWrapper({
-    super.key,
-    required this.batchId,
-    required this.batchName,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Column(
-        children: [
-          const TabBar(
-            tabs: [
-              Tab(text: "Requests"),
-              Tab(text: "Accepted"),
-            ],
-          ),
-
-          Expanded(
-            child: TabBarView(
-              children: [
-                TeacherRequestScreen(batchId: batchId, batchName: batchName),
-                TeacherAcceptedPlaceholder(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class StudentAcceptedPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Accepted Students"));
-  }
-}
-
-class TeacherAcceptedPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Accepted Teachers"));
-  }
+    ),
+  );
 }

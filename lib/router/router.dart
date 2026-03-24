@@ -2,6 +2,8 @@ import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
 import 'package:learning_admin_app/models/user_model.dart';
 import 'package:learning_admin_app/pages/Batch/batch_details.dart';
+import 'package:learning_admin_app/pages/Batch/widget/students_page.dart';
+import 'package:learning_admin_app/pages/Batch/widget/teachers_page.dart';
 import 'package:learning_admin_app/pages/Profile/update_profile.dart';
 import 'package:learning_admin_app/pages/Units/admin_units.dart';
 import 'package:learning_admin_app/pages/admin_nav_bar.dart';
@@ -15,10 +17,14 @@ final router = GoRouter(
   initialLocation: "/splash",
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
-    GoRoute(path: "/login", builder: (context, state) => const LoginPage()),  
-    GoRoute(path: "/batchdetails", builder: (context, state){ 
-      final batch=state.extra as Batch; 
-      return BatchDetails(batch: batch);}),
+    GoRoute(path: "/login", builder: (context, state) => const LoginPage()),
+    GoRoute(
+      path: "/batchdetails",
+      builder: (context, state) {
+        final batch = state.extra as Batch;
+        return BatchDetails(batch: batch);
+      },
+    ),
     GoRoute(
       path: "/register",
       builder: (context, state) => const RegisterPage(),
@@ -38,7 +44,7 @@ final router = GoRouter(
         return UpdateProfilePage(user: user);
       },
     ),
-     GoRoute(
+    GoRoute(
       path: "/chapterupdate/:name",
       builder: (context, state) {
         final name = state.pathParameters['name']!;
@@ -53,6 +59,21 @@ final router = GoRouter(
         final unitname = state.pathParameters['unitname']!;
         final unitId = state.extra as String;
         return VideoNotesExam(unitName: unitname, unitId: unitId);
+      },
+    ),
+    GoRoute(
+      path: '/batch/students',
+      builder: (context, state) {
+        final batch = state.extra as Batch;
+        return StudentsPage(batch: batch);
+      },
+    ),
+
+    GoRoute(
+      path: '/batch/teachers',
+      builder: (context, state) {
+        final batch = state.extra as Batch;
+        return TeachersPage(batch: batch);
       },
     ),
   ],

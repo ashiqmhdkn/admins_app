@@ -67,15 +67,17 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
       builder: (ctx) => AlertDialog(
         title: const Text('Clear Accepted Requests'),
         content: const Text(
-            'Delete all accepted requests? This cannot be undone.'),
+          'Delete all accepted requests? This cannot be undone.',
+        ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
           TextButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Delete',
-                  style: TextStyle(color: Colors.red))),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
         ],
       ),
     );
@@ -96,14 +98,15 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
   }
 
   void _showSnack(String msg, Color color) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg, style: const TextStyle(color: Colors.white)),
-      backgroundColor: color,
-      behavior: SnackBarBehavior.floating,
-      shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.all(12),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg, style: const TextStyle(color: Colors.white)),
+        backgroundColor: color,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        margin: const EdgeInsets.all(12),
+      ),
+    );
   }
 
   @override
@@ -113,57 +116,14 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF2F4F7),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF1A3FBF),
-        foregroundColor: Colors.white,
-        title: Text(
-          widget.batchName,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
-        centerTitle: true,
-        elevation: 0,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onSelected: (val) {
-              if (val == 'clear_accepted') _deleteAllAccepted();
-              if (val == 'refresh') {
-                // ✅ Fixed: refresh batchRequestsProvider
-                ref.read(batchRequestsProvider.notifier).refresh();
-              }
-            },
-            itemBuilder: (_) => [
-              const PopupMenuItem(
-                value: 'refresh',
-                child: Row(children: [
-                  Icon(Icons.refresh, size: 18),
-                  SizedBox(width: 8),
-                  Text('Refresh'),
-                ]),
-              ),
-              const PopupMenuItem(
-                value: 'clear_accepted',
-                child: Row(children: [
-                  Icon(Icons.cleaning_services,
-                      size: 18, color: Colors.red),
-                  SizedBox(width: 8),
-                  Text('Clear Accepted',
-                      style: TextStyle(color: Colors.red)),
-                ]),
-              ),
-            ],
-          ),
-        ],
-      ),
+
       body: requestsAsync.when(
-        loading: () =>
-            const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline,
-                  color: Colors.red, size: 48),
+              const Icon(Icons.error_outline, color: Colors.red, size: 48),
               const SizedBox(height: 12),
               Text('Error: $e', textAlign: TextAlign.center),
               const SizedBox(height: 12),
@@ -178,10 +138,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
         ),
         data: (requests) {
           // ✅ Fixed: filter by req.status (not req.name)
-          final pending =
-              requests.where((r) => r.status == 'pending').toList();
-          final others =
-              requests.where((r) => r.status != 'pending').toList();
+          final pending = requests.where((r) => r.status == 'pending').toList();
+          final others = requests.where((r) => r.status != 'pending').toList();
           final all = [...pending, ...others];
 
           if (all.isEmpty) {
@@ -189,34 +147,37 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.inbox_outlined,
-                      size: 64, color: Colors.grey.shade400),
+                  Icon(
+                    Icons.inbox_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
                   const SizedBox(height: 12),
-                  Text('No requests yet',
-                      style: TextStyle(
-                          color: Colors.grey.shade500, fontSize: 16)),
+                  Text(
+                    'No requests yet',
+                    style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
+                  ),
                 ],
               ),
             );
           }
 
           return RefreshIndicator(
-            onRefresh: () =>
-                ref.read(batchRequestsProvider.notifier).refresh(),
+            onRefresh: () => ref.read(batchRequestsProvider.notifier).refresh(),
             child: ListView.separated(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
               itemCount: all.length,
-              separatorBuilder: (_, __) =>
-                  const SizedBox(height: 10),
+              separatorBuilder: (_, __) => const SizedBox(height: 10),
               itemBuilder: (context, index) {
                 final req = all[index]; // ✅ type: BatchRequest
                 return _RequestCard(
                   request: req,
-                  isAcceptLoading:
-                      _loadingIds.contains('accept_${req.requestId}'),
-                  isRejectLoading:
-                      _loadingIds.contains('reject_${req.requestId}'),
+                  isAcceptLoading: _loadingIds.contains(
+                    'accept_${req.requestId}',
+                  ),
+                  isRejectLoading: _loadingIds.contains(
+                    'reject_${req.requestId}',
+                  ),
                   // ✅ Fixed: pass req.requestId (not req.userId)
                   onAccept: req.status == 'pending'
                       ? () => _accept(req.requestId)
@@ -230,9 +191,7 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
                         .deleteSingleRequest(requestId: req.requestId);
                     if (mounted) {
                       _showSnack(
-                        success
-                            ? 'Request deleted'
-                            : 'Failed to delete',
+                        success ? 'Request deleted' : 'Failed to delete',
                         success ? Colors.green : Colors.red,
                       );
                     }
@@ -291,20 +250,16 @@ class _RequestCard extends StatelessWidget {
             offset: const Offset(0, 2),
           ),
         ],
-        border: Border(
-          left: BorderSide(color: _statusColor, width: 4),
-        ),
+        border: Border(left: BorderSide(color: _statusColor, width: 4)),
       ),
       child: Padding(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           children: [
             CircleAvatar(
               radius: 28,
               backgroundColor: Colors.grey.shade200,
-              child: Icon(Icons.person,
-                  size: 30, color: Colors.grey.shade500),
+              child: Icon(Icons.person, size: 30, color: Colors.grey.shade500),
             ),
             const SizedBox(width: 12),
 
@@ -353,8 +308,11 @@ class _RequestCard extends StatelessWidget {
             ] else ...[
               IconButton(
                 onPressed: onDelete,
-                icon: const Icon(Icons.delete_outline,
-                    color: Colors.grey, size: 22),
+                icon: const Icon(
+                  Icons.delete_outline,
+                  color: Colors.grey,
+                  size: 22,
+                ),
                 tooltip: 'Delete',
               ),
             ],
@@ -393,8 +351,7 @@ class _ActionButton extends StatelessWidget {
         child: isLoading
             ? Padding(
                 padding: const EdgeInsets.all(10),
-                child: CircularProgressIndicator(
-                    strokeWidth: 2, color: color),
+                child: CircularProgressIndicator(strokeWidth: 2, color: color),
               )
             : Icon(icon, color: color, size: 22),
       ),

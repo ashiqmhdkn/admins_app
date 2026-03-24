@@ -4,11 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
 import 'package:learning_admin_app/pages/Batch/widget/studentrequest.dart';
 import 'package:learning_admin_app/pages/Batch/widget/teacherrequest.dart';
-import 'package:learning_admin_app/widgets/staff_list.dart';
 
 class BatchDetails extends StatefulWidget {
-  final Batch batch; 
-  BatchDetails({super.key,required this.batch,});
+  final Batch batch;
+  BatchDetails({super.key, required this.batch});
 
   @override
   State<BatchDetails> createState() => _BatchDetailsState();
@@ -99,10 +98,104 @@ class _BatchDetailsState extends State<BatchDetails> {
           });
         },
         children: [
-          BatchRequestsScreen(batchId: widget.batch.batchId,batchName: widget.batch.name,),
-          TeacherRequestScreen(batchId: widget.batch.batchId, batchName: widget.batch.name)
+          StudentsTabWrapper(
+            batchId: widget.batch.batchId,
+            batchName: widget.batch.name,
+          ),
+          TeachersTabWrapper(
+            batchId: widget.batch.batchId,
+            batchName: widget.batch.name,
+          ),
         ],
       ),
     );
+  }
+}
+
+class StudentsTabWrapper extends StatelessWidget {
+  final String batchId;
+  final String batchName;
+
+  const StudentsTabWrapper({
+    super.key,
+    required this.batchId,
+    required this.batchName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          const TabBar(
+            tabs: [
+              Tab(text: "Requests"),
+              Tab(text: "Accepted"),
+            ],
+          ),
+
+          Expanded(
+            child: TabBarView(
+              children: [
+                BatchRequestsScreen(batchId: batchId, batchName: batchName),
+                StudentAcceptedPlaceholder(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class TeachersTabWrapper extends StatelessWidget {
+  final String batchId;
+  final String batchName;
+
+  const TeachersTabWrapper({
+    super.key,
+    required this.batchId,
+    required this.batchName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          const TabBar(
+            tabs: [
+              Tab(text: "Requests"),
+              Tab(text: "Accepted"),
+            ],
+          ),
+
+          Expanded(
+            child: TabBarView(
+              children: [
+                TeacherRequestScreen(batchId: batchId, batchName: batchName),
+                TeacherAcceptedPlaceholder(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StudentAcceptedPlaceholder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text("Accepted Students"));
+  }
+}
+
+class TeacherAcceptedPlaceholder extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text("Accepted Teachers"));
   }
 }

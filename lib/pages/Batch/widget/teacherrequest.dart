@@ -24,8 +24,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ✅ Fixed: use batchRequestsProvider
-      ref.read(batchRequestsProvider.notifier).setBatchId(widget.batchId);
+      // ✅ Fixed: use batchTeachersProvider
+      ref.read(batchTeachersProvider.notifier).setBatchId(widget.batchId);
     });
   }
 
@@ -33,8 +33,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
     setState(() => _loadingIds.add('accept_$requestId'));
     // ✅ Fixed: call acceptRequest with requestId
     final success = await ref
-        .read(batchRequestsProvider.notifier)
-        .acceptRequest(requestId: requestId);
+        .read(batchTeachersProvider.notifier)
+        .assignTeacher(teacherId: requestId);
     setState(() => _loadingIds.remove('accept_$requestId'));
 
     if (mounted) {
@@ -49,8 +49,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
     setState(() => _loadingIds.add('reject_$requestId'));
     // ✅ Fixed: call rejectRequest with requestId
     final success = await ref
-        .read(batchRequestsProvider.notifier)
-        .rejectRequest(requestId: requestId);
+        .read(batchTeachersProvider.notifier)
+        .removeTeacher(teacherId: requestId);
     setState(() => _loadingIds.remove('reject_$requestId'));
 
     if (mounted) {
@@ -61,41 +61,41 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
     }
   }
 
-  Future<void> _deleteAllAccepted() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Clear Accepted Requests'),
-        content: const Text(
-          'Delete all accepted requests? This cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
+  // Future<void> _deleteAllAccepted() async {
+  //   final confirm = await showDialog<bool>(
+  //     context: context,
+  //     builder: (ctx) => AlertDialog(
+  //       title: const Text('Clear Accepted Requests'),
+  //       content: const Text(
+  //         'Delete all accepted requests? This cannot be undone.',
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(ctx, false),
+  //           child: const Text('Cancel'),
+  //         ),
+  //         TextButton(
+  //           onPressed: () => Navigator.pop(ctx, true),
+  //           child: const Text('Delete', style: TextStyle(color: Colors.red)),
+  //         ),
+  //       ],
+  //     ),
+  //   );
 
-    if (confirm != true) return;
+  //   if (confirm != true) return;
 
-    // ✅ Fixed: actually call the provider method
-    final success = await ref
-        .read(batchRequestsProvider.notifier)
-        .deleteAllAccepted();
+  //   // ✅ Fixed: actually call the provider method
+  //   final success = await ref
+  //       .read(batchTeachersProvider.notifier)
+  //       .deleteAllAccepted();
 
-    if (mounted) {
-      _showSnack(
-        success ? 'Cleared all accepted requests' : 'Failed to clear',
-        success ? Colors.green : Colors.red,
-      );
-    }
-  }
+  //   if (mounted) {
+  //     _showSnack(
+  //       success ? 'Cleared all accepted requests' : 'Failed to clear',
+  //       success ? Colors.green : Colors.red,
+  //     );
+  //   }
+  // }
 
   void _showSnack(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -111,8 +111,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Fixed: watch batchRequestsProvider
-    final requestsAsync = ref.watch(batchRequestsProvider);
+    // ✅ Fixed: watch batchTeachersProvider
+    final requestsAsync = ref.watch(batchTeachersProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF2F4F7),
@@ -129,7 +129,7 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
               const SizedBox(height: 12),
               ElevatedButton.icon(
                 onPressed: () =>
-                    ref.read(batchRequestsProvider.notifier).refresh(),
+                    ref.read(batchTeachersProvider.notifier).refresh(),
                 icon: const Icon(Icons.refresh),
                 label: const Text('Retry'),
               ),
@@ -138,8 +138,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
         ),
         data: (requests) {
           // ✅ Fixed: filter by req.status (not req.name)
-          final pending = requests.where((r) => r.status == 'pending').toList();
-          final others = requests.where((r) => r.status != 'pending').toList();
+          final pending = requests.where((r) => r.name == 'pending').toList();
+          final others = requests.where((r) => r.name != 'pending').toList();
           final all = [...pending, ...others];
 
           if (all.isEmpty) {
@@ -163,7 +163,7 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
           }
 
           return RefreshIndicator(
-            onRefresh: () => ref.read(batchRequestsProvider.notifier).refresh(),
+            onRefresh: () => ref.read(batchTeachersProvider.notifier).refresh(),
             child: ListView.separated(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
               itemCount: all.length,
@@ -173,22 +173,22 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
                 return _RequestCard(
                   request: req,
                   isAcceptLoading: _loadingIds.contains(
-                    'accept_${req.requestId}',
+                    'accept_${req.userId}',
                   ),
                   isRejectLoading: _loadingIds.contains(
-                    'reject_${req.requestId}',
+                    'reject_${req.userId}',
                   ),
                   // ✅ Fixed: pass req.requestId (not req.userId)
-                  onAccept: req.status == 'pending'
-                      ? () => _accept(req.requestId)
+                  onAccept: req.name == 'pending'
+                      ? () => _accept(req.userId)
                       : null,
-                  onReject: req.status == 'pending'
-                      ? () => _reject(req.requestId)
+                  onReject: req.name == 'pending'
+                      ? () => _reject(req.userId)
                       : null,
                   onDelete: () async {
                     final success = await ref
-                        .read(batchRequestsProvider.notifier)
-                        .deleteSingleRequest(requestId: req.requestId);
+                        .read(batchTeachersProvider.notifier)
+                        .removeTeacher(teacherId: req.userId);
                     if (mounted) {
                       _showSnack(
                         success ? 'Request deleted' : 'Failed to delete',
@@ -208,7 +208,7 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
 
 // ✅ Fixed: accepts BatchRequest (not BatchMember)
 class _RequestCard extends StatelessWidget {
-  final BatchRequest request;
+  final BatchMember request;
   final bool isAcceptLoading;
   final bool isRejectLoading;
   final VoidCallback? onAccept;
@@ -225,7 +225,7 @@ class _RequestCard extends StatelessWidget {
   });
 
   Color get _statusColor {
-    switch (request.status) {
+    switch (request.name) {
       case 'accepted':
         return Colors.green;
       case 'rejected':
@@ -237,7 +237,7 @@ class _RequestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isPending = request.status == 'pending';
+    final isPending = request.name == 'pending';
 
     return Container(
       decoration: BoxDecoration(
@@ -269,7 +269,7 @@ class _RequestCard extends StatelessWidget {
                 children: [
                   Text(
                     // ✅ Fixed: use studentId from BatchRequest
-                    request.studentId,
+                    request.userId,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
@@ -279,7 +279,7 @@ class _RequestCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    request.status.toUpperCase(),
+                    request.name.toUpperCase(),
                     style: TextStyle(
                       fontSize: 11,
                       color: _statusColor,

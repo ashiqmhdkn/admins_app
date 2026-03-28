@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
 
 class AdminSubjectNotesCard extends StatelessWidget {
   final String title;
@@ -34,32 +33,36 @@ class AdminSubjectNotesCard extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(15, 12, 10, 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Image.network(
+                        'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(fontSize: 14),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 30,
-                          width: 130,
-                          child: Custombuttonone(
-                            text: "Download",
-                            onTap: onTap,
+                        Text(
+                          title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          subtitle,
+                          style: const TextStyle(fontSize: 14),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),

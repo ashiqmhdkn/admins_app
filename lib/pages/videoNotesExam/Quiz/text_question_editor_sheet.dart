@@ -20,18 +20,30 @@ class TextQuestionEditorSheet extends StatelessWidget {
       title: "Edit Question",
       onDelete: onDelete,
       children: [
-        (s) => field("Title", question.title, (v) {
-          question.title = v;
-          onUpdate();
-        }),
-        (s) => field("Description", question.description, (v) {
-          question.description = v;
-          onUpdate();
-        }),
-        (s) => field("Answer", question.answer, (v) {
-          question.answer = v;
-          onUpdate();
-        }),
+        (s) => CustomField(
+          label: "Title",
+          value: question.title,
+          onChanged: (v) {
+            question.title = v;
+            onUpdate();
+          },
+        ),
+        (s) => CustomField(
+          label: "Description",
+          value: question.description,
+          onChanged: (v) {
+            question.description = v;
+            onUpdate();
+          },
+        ),
+        (s) => CustomField(
+          label: "Answer",
+          value: question.answer,
+          onChanged: (v) {
+            question.answer = v;
+            onUpdate();
+          },
+        ),
         (s) => marks(question, onUpdate),
         (s) => required(question, onUpdate, s),
       ],
@@ -45,7 +57,8 @@ class BaseEditor extends StatelessWidget {
 
   final VoidCallback onDelete;
 
-  const BaseEditor({super.key, 
+  const BaseEditor({
+    super.key,
     required this.title,
     required this.children,
     required this.onDelete,
@@ -101,27 +114,6 @@ class BaseEditor extends StatelessWidget {
   }
 }
 
-Widget field(String label, String value, ValueChanged<String> onChanged) {
-  return Padding(
-    padding: const EdgeInsets.only(bottom: 10),
-    child: TextField(
-      controller: TextEditingController(text: value),
-      onChanged: onChanged,
-      decoration: InputDecoration(
-        labelText: label,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.grey, width: 1.2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.blue, width: 2),
-        ),
-      ),
-    ),
-  );
-}
-
 Widget marks(QuestionModel q, VoidCallback onUpdate) {
   return TextField(
     controller: TextEditingController(text: q.marks.toString()),
@@ -159,4 +151,64 @@ Widget required(
       onUpdate();
     },
   );
+}
+
+class CustomField extends StatefulWidget {
+  final String label;
+  final String value;
+  final ValueChanged<String> onChanged;
+
+  const CustomField({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onChanged,
+  });
+
+  @override
+  State<CustomField> createState() => _CustomFieldState();
+}
+
+class _CustomFieldState extends State<CustomField> {
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController(text: widget.value);
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.value != widget.value) {
+      controller.text = widget.value;
+      controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: controller.text.length),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: TextField(
+        controller: controller,
+        onChanged: widget.onChanged,
+        decoration: InputDecoration(
+          labelText: widget.label,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.grey, width: 1.2),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
+          ),
+        ),
+      ),
+    );
+  }
 }

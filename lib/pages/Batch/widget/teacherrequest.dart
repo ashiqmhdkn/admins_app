@@ -24,7 +24,6 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ✅ Fixed: use batchTeachersProvider
       ref.read(batchTeachersProvider.notifier).setBatchId(widget.batchId);
     });
   }
@@ -115,8 +114,6 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
     final requestsAsync = ref.watch(batchTeachersProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F7),
-
       body: requestsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
@@ -172,12 +169,8 @@ class _TeacherRequestScreenState extends ConsumerState<TeacherRequestScreen> {
                 final req = all[index]; // ✅ type: BatchRequest
                 return _RequestCard(
                   request: req,
-                  isAcceptLoading: _loadingIds.contains(
-                    'accept_${req.userId}',
-                  ),
-                  isRejectLoading: _loadingIds.contains(
-                    'reject_${req.userId}',
-                  ),
+                  isAcceptLoading: _loadingIds.contains('accept_${req.userId}'),
+                  isRejectLoading: _loadingIds.contains('reject_${req.userId}'),
                   // ✅ Fixed: pass req.requestId (not req.userId)
                   onAccept: req.name == 'pending'
                       ? () => _accept(req.userId)
@@ -241,7 +234,7 @@ class _RequestCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
@@ -270,9 +263,11 @@ class _RequestCard extends StatelessWidget {
                   Text(
                     // ✅ Fixed: use studentId from BatchRequest
                     request.userId,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
+
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

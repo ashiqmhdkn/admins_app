@@ -272,19 +272,28 @@ class _QuestionEditorPageState extends State<QuestionEditorPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Edit Question"),
+        scrolledUnderElevation: 0,
         actions: [IconButton(icon: const Icon(Icons.check), onPressed: _save)],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            field("Title", question.title, (v) {
-              setState(() => question.title = v);
-            }),
+            CustomField(
+              label: "Title",
+              value: question.title,
+              onChanged: (v) {
+                question.title = v;
+              },
+            ),
 
-            field("Description", question.description, (v) {
-              setState(() => question.description = v);
-            }),
+            CustomField(
+              label: "Description",
+              value: question.description,
+              onChanged: (v) {
+                question.description = v;
+              },
+            ),
 
             buildImageSection(
               context,
@@ -302,9 +311,13 @@ class _QuestionEditorPageState extends State<QuestionEditorPage> {
                 setSheetState: (fn) => setState(fn),
               )
             else
-              field("Answer", question.answer, (v) {
-                setState(() => question.answer = v);
-              }),
+              CustomField(
+                label: "Answer",
+                value: question.answer,
+                onChanged: (v) {
+                  question.answer = v;
+                },
+              ),
 
             const SizedBox(height: 10),
 
@@ -405,7 +418,6 @@ Widget buildMCQEditor({
                   setSheetState(() {
                     question.optionControllers.removeAt(i);
 
-                    // ⚠️ adjust indexes after deletion
                     question.correctOptionIndexes = question
                         .correctOptionIndexes
                         .where((index) => index != i)

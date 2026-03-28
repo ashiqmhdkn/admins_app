@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CourseCardBatch extends StatelessWidget {
+class SubjectCardBatch extends StatelessWidget {
   final String title;
   final String backGroundImage;
   final VoidCallback onTap;
 
-  const CourseCardBatch({
+  const SubjectCardBatch({
     super.key,
     required this.title,
     required this.backGroundImage,
@@ -27,7 +27,7 @@ class CourseCardBatch extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Image.network(backGroundImage, fit: BoxFit.cover),
-
+                
                 Positioned(
                   bottom: 0,
                   left: 0,

@@ -111,8 +111,6 @@ class _BatchRequestsScreenState extends ConsumerState<BatchRequestsScreen> {
     final requestsAsync = ref.watch(batchRequestsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2F4F7),
-
       body: requestsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(
@@ -235,7 +233,7 @@ class _RequestCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.tertiary,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
@@ -265,9 +263,10 @@ class _RequestCard extends StatelessWidget {
                 children: [
                   Text(
                     request.studentId,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

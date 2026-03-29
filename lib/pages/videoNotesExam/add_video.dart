@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:learning_admin_app/provider/notes_provider.dart';
 import 'package:learning_admin_app/provider/video_provider.dart';
 
 class AddVideo extends ConsumerStatefulWidget {
@@ -13,7 +14,7 @@ class AddVideo extends ConsumerStatefulWidget {
 }
 
 class _AddVideoState extends ConsumerState<AddVideo> {
-  File? videoFile;
+  File? videoFile; 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   
@@ -31,6 +32,14 @@ class _AddVideoState extends ConsumerState<AddVideo> {
       });
     }
   }
+   @override
+    void initState() {
+      Future.microtask((){
+        ref.read(notesNotifierProvider.notifier).setunit_id(widget.unitid);
+        ref.read(videosNotifierProvider.notifier).setUnitId(widget.unitid);
+      });
+      super.initState();
+    }
 
   Future<void> _submit() async {
     if (videoFile == null ||

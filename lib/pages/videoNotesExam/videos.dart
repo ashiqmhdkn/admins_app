@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/video_playback.dart';
+import 'package:learning_admin_app/provider/notes_provider.dart';
 import 'package:learning_admin_app/provider/video_provider.dart';
 import 'package:learning_admin_app/widgets/Cards/video_selection_card.dart';
 class AdminSubjectVideos extends ConsumerStatefulWidget {

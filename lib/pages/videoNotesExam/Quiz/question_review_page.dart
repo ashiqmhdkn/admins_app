@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
+import 'package:learning_admin_app/widgets/admin_appbar.dart';
 class QuizReviewPage extends StatelessWidget {
   final String title;
   final String description;
@@ -17,7 +18,9 @@ class QuizReviewPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Review Quiz")),
+      appBar:AdminAppBar(title: "Review Quiz",onAddPressed: () {
+        
+      },),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Column(

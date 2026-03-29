@@ -75,13 +75,13 @@ Future<void> uploadVideoTUSC({
   );
 }
 
-Future<List<Video>> videosGet(String token, String unit_id) async {
+Future<List<Video>> videosGet({required String token, required unit_id}) async {
   final uri = Uri.parse('$baseUrl/unit/videos?unit_id=$unit_id');
 
   try {
     final response = await http.get(
       uri,
-      headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+      headers: { 'Authorization': 'Bearer $token','Accept': 'application/json'},
     );
 
     print('Videos API Status: ${response.statusCode}');
@@ -105,12 +105,11 @@ Future<List<Video>> videosGet(String token, String unit_id) async {
       }
     }
 
-    if (response.statusCode == 401) {
-      throw Exception('Unauthorized: Token expired');
-    }
-
     throw Exception('Server error: ${response.statusCode}');
   } catch (e) {
+    print("unitid: $unit_id");
+    print("token :$token");
+    print("headers:...............................................");
     print('❌ Error in videosGet: $e');
     rethrow;
   }

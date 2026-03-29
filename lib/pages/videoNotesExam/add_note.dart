@@ -1,17 +1,19 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:learning_admin_app/provider/notes_provider.dart';
 
-class AddNotes extends StatefulWidget {
+class AddNotes extends ConsumerStatefulWidget {
   final String unitId;
 
   const AddNotes({super.key, required this.unitId});
 
   @override
-  State<AddNotes> createState() => _AddNotesState();
+  ConsumerState<AddNotes> createState() => _AddNotesState();
 }
 
-class _AddNotesState extends State<AddNotes> {
+class _AddNotesState extends ConsumerState<AddNotes> {
   File? pdfFile;
 
   final TextEditingController _titleController = TextEditingController();
@@ -32,7 +34,7 @@ class _AddNotesState extends State<AddNotes> {
     }
   }
 
-  void _submit() {
+  void _submit() async{
     if (pdfFile == null ||
         _titleController.text.isEmpty ||
         _descriptionController.text.isEmpty) {
@@ -45,19 +47,21 @@ class _AddNotesState extends State<AddNotes> {
     }
 
     setState(() => _isUploading = true);
+    final result=await ref.read(notesNotifierProvider.notifier).createNote(title: _titleController.text.trim(),file: pdfFile!);
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
 
       setState(() => _isUploading = false);
-
-      ScaffoldMessenger.of(context).showSnackBar(
+    if(result){
+      Navigator.pop(context);}
+      else{
+        ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Notes added (UI only)"),
-          backgroundColor: Colors.green,
+          content: Text("failed to create notes"),
+          backgroundColor: Colors.red,
         ),
       );
-
-      Navigator.pop(context);
+      }
     });
   }
 
@@ -112,6 +116,10 @@ class _AddNotesState extends State<AddNotes> {
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
+  }
+  @override
+  void oninite(){
+    
   }
 
   @override

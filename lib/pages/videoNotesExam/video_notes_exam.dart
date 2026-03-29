@@ -112,7 +112,7 @@ class _AdminVide0NotesExamState extends State<VideoNotesExam> {
         children: [
           AdminSubjectVideos(unitName: widget.unitName, unit_id: widget.unitId),
           StudentExams(unitId: widget.unitId),
-          AdminSubjectNotes(unitName: widget.unitName),
+          AdminSubjectNotes(unitName: widget.unitName,unitId: widget.unitId,),
         ],
       ),
     );

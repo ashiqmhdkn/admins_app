@@ -32,6 +32,7 @@ Future<List<Unit>> unitsget(String token,String subjectId) async {
         throw Exception('units data not found in response');
       }
     } else if (response.statusCode == 401) {
+      print(token);
       throw Exception('Unauthorized: Invalid or expired token');
     } else {
       final Map<String, dynamic> error = jsonDecode(response.body);

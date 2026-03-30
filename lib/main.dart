@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/router/router.dart';
 import 'package:learning_admin_app/theme/theme_state.dart';
-
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }

@@ -261,7 +261,6 @@ class _RequestCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    // ✅ Fixed: use studentId from BatchRequest
                     request.userId,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

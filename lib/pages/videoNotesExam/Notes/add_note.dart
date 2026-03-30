@@ -34,7 +34,7 @@ class _AddNotesState extends ConsumerState<AddNotes> {
     }
   }
 
-  void _submit() async{
+  void _submit() async {
     if (pdfFile == null ||
         _titleController.text.isEmpty ||
         _descriptionController.text.isEmpty) {
@@ -47,20 +47,22 @@ class _AddNotesState extends ConsumerState<AddNotes> {
     }
 
     setState(() => _isUploading = true);
-    final result=await ref.read(notesNotifierProvider.notifier).createNote(title: _titleController.text.trim(),file: pdfFile!);
+    final result = await ref
+        .read(notesNotifierProvider.notifier)
+        .createNote(title: _titleController.text.trim(), file: pdfFile!);
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
 
       setState(() => _isUploading = false);
-    if(result){
-      Navigator.pop(context);}
-      else{
+      if (result) {
+        Navigator.pop(context);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("failed to create notes"),
-          backgroundColor: Colors.red,
-        ),
-      );
+          const SnackBar(
+            content: Text("failed to create notes"),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     });
   }
@@ -117,10 +119,9 @@ class _AddNotesState extends ConsumerState<AddNotes> {
     _descriptionController.dispose();
     super.dispose();
   }
+
   @override
-  void oninite(){
-    
-  }
+  void oninite() {}
 
   @override
   Widget build(BuildContext context) {

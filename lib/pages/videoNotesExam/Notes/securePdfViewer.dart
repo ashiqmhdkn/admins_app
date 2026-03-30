@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,77 +14,83 @@ class SecurePdfViewer extends StatefulWidget {
 
 class _SecurePdfViewerState extends State<SecurePdfViewer> {
   Uint8List? pdfBytes;
+  bool isLoading = true;
+  String? error;
 
   @override
   void initState() {
     super.initState();
-    _secureScreen();
     _loadPdf();
   }
 
-  Future<void> _secureScreen() async {
-    await FlutterWindowManager.addFlags(
-      FlutterWindowManager.FLAG_SECURE,
-    );
-  }
-
   Future<void> _loadPdf() async {
-    final response = await http.get(
-      Uri.parse("https://your-api.com/get-note/${widget.noteId}"),
-      headers: {
-        "Authorization": "Bearer YOUR_TOKEN",
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse("https://your-api.com/get-note/${widget.noteId}"),
+        headers: {"Authorization": "Bearer YOUR_TOKEN"},
+      );
 
-    if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
+        setState(() {
+          pdfBytes = response.bodyBytes;
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          error = "Failed to load PDF";
+          isLoading = false;
+        });
+      }
+    } catch (e) {
       setState(() {
-        pdfBytes = response.bodyBytes;
+        error = "Error loading PDF";
+        isLoading = false;
       });
     }
   }
 
-  @override
-  void dispose() {
-    FlutterWindowManager.clearFlags(
-      FlutterWindowManager.FLAG_SECURE,
+  Widget _buildWatermark() {
+    return Positioned.fill(
+      child: IgnorePointer(
+        child: Opacity(
+          opacity: 0.08,
+          child: Center(
+            child: Transform.rotate(
+              angle: -0.5,
+              child: const Text(
+                "Crescent",
+                style: TextStyle(
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
-    super.dispose();
+  }
+
+  Widget _buildPdfViewer() {
+    return SfPdfViewer.memory(
+      pdfBytes!,
+      canShowScrollHead: false,
+      canShowPaginationDialog: false,
+      enableTextSelection: false,
+      enableDoubleTapZooming: false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Note ")),
-      body: pdfBytes == null
+      appBar: AppBar(title: const Text("Secure Note"), centerTitle: true),
+      body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                SfPdfViewer.memory(
-                  pdfBytes!,
-                  canShowScrollHead: false,
-                  canShowPaginationDialog: false,
-                  enableTextSelection: false,
-                  enableDoubleTapZooming: false,
-                ),
-
-                Positioned.fill(
-                  child: IgnorePointer(
-                    child: Opacity(
-                      opacity: 0.1,
-                      child: Center(
-                        child: Text(
-                          "Crescent",
-                          style: const TextStyle(
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          : error != null
+          ? Center(child: Text(error!))
+          : Stack(children: [_buildPdfViewer(), _buildWatermark()]),
     );
   }
 }

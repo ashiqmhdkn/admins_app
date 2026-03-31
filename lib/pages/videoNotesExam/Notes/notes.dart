@@ -28,7 +28,6 @@ class _notesState extends ConsumerState<AdminSubjectNotes> {
 
   @override
   Widget build(BuildContext context) {
-    ref.read(notesNotifierProvider.notifier).setunit_id(widget.unitId);
     final notesAsync = ref.watch(notesNotifierProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,

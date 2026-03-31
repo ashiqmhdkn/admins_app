@@ -53,7 +53,7 @@ Future<List<Batch>> getBatches({
   try {
     final uri = Uri.parse('$baseUrl?course_id=$courseId');
     final response = await http.get(uri, headers: _headers(token));
-
+    print("get batchs");
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final batchesList = data['batch'] as List;

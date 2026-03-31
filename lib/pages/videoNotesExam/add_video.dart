@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/provider/notes_provider.dart';
 import 'package:learning_admin_app/provider/video_provider.dart';
+import 'package:learning_admin_app/utils/app_snackbar.dart';
 
 class AddVideo extends ConsumerStatefulWidget {
   final String unitid;
@@ -81,9 +82,10 @@ class _AddVideoState extends ConsumerState<AddVideo> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Upload failed: $e"), backgroundColor: Colors.red),
-        );
+        AppSnackBar.show(
+          context,
+          message:"Upload failed: $e", 
+          type: SnackType.error,);
       }
     } finally {
       if (mounted) {

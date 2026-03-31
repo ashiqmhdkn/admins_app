@@ -1,27 +1,14 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
+import 'package:learning_admin_app/models/student_quiz_response.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_summary_page.dart';
 
-class StudentResponse {
-  String textAnswer;
-  List<int> selectedOptionIndexes;
-
-  StudentResponse({this.textAnswer = '', List<int>? selectedOptionIndexes})
-    : selectedOptionIndexes = selectedOptionIndexes ?? [];
-}
-
 class ExamAttemptPage extends StatefulWidget {
-  final String title;
-  final String description;
-  final List<QuestionModel> questions;
+  final Exam exam;
 
-  const ExamAttemptPage({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.questions,
-  });
+  const ExamAttemptPage({super.key, required this.exam});
 
   @override
   State<ExamAttemptPage> createState() => _ExamAttemptPageState();
@@ -36,13 +23,13 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
   void initState() {
     super.initState();
     _responses = List.generate(
-      widget.questions.length,
+      widget.exam.questionModels.length,
       (_) => StudentResponse(),
     );
   }
 
   void _goToNext() {
-    if (_currentIndex < widget.questions.length - 1) {
+    if (_currentIndex < widget.exam.questionModels.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
@@ -60,8 +47,8 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
   }
 
   void _submitExam() {
-    for (int i = 0; i < widget.questions.length; i++) {
-      final q = widget.questions[i];
+    for (int i = 0; i < widget.exam.questionModels.length; i++) {
+      final q = widget.exam.questionModels[i];
       final r = _responses[i];
       if (q.isRequired) {
         if (q.type == QuestionType.multipleChoice &&
@@ -83,11 +70,8 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ExamSummaryPage(
-          title: widget.title,
-          questions: widget.questions,
-          responses: _responses,
-        ),
+        builder: (_) =>
+            ExamSummaryPage(exam: widget.exam, responses: _responses),
       ),
     );
   }
@@ -110,12 +94,12 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
 
   @override
   Widget build(BuildContext context) {
-    final total = widget.questions.length;
+    final total = widget.exam.questionModels.length;
     final progress = total == 0 ? 0.0 : (_currentIndex + 1) / total;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.exam.title),
         scrolledUnderElevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
@@ -209,7 +193,7 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
               onPageChanged: (i) => setState(() => _currentIndex = i),
               itemCount: total,
               itemBuilder: (_, i) => QuestionAttemptCard(
-                question: widget.questions[i],
+                question: widget.exam.questionModels[i],
                 response: _responses[i],
                 questionNumber: i + 1,
                 onUpdate: () => setState(() {}),
@@ -223,7 +207,7 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
   }
 
   bool _isAnswered(int i) {
-    final q = widget.questions[i];
+    final q = widget.exam.questionModels[i];
     final r = _responses[i];
     if (q.type == QuestionType.multipleChoice) {
       return r.selectedOptionIndexes.isNotEmpty;
@@ -418,7 +402,7 @@ class _MCQAnswerWidget extends StatefulWidget {
 class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
   @override
   Widget build(BuildContext context) {
-    final options = widget.question.optionControllers;
+    final options = widget.question.options;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -434,7 +418,7 @@ class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
         ),
         const SizedBox(height: 10),
         ...List.generate(options.length, (i) {
-          final text = options[i].text;
+          final text = options[i];
           final isSelected = widget.response.selectedOptionIndexes.contains(i);
           return GestureDetector(
             onTap: () {

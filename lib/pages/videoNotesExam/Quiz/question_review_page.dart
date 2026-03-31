@@ -1,43 +1,36 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
 import 'package:learning_admin_app/widgets/admin_appbar.dart';
-class QuizReviewPage extends StatelessWidget {
-  final String title;
-  final String description;
-  final List<QuestionModel> questions;
 
-  const QuizReviewPage({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.questions,
-  });
+class QuizReviewPage extends StatelessWidget {
+  final Exam exam;
+
+  const QuizReviewPage({super.key, required this.exam});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AdminAppBar(title: "Review Quiz",onAddPressed: () {
-        
-      },),
+      appBar: AdminAppBar(title: "Review Quiz", onAddPressed: () {}),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Title :  $title",
+              "Title : ${exam.title}",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
-              "Description : $description",
+              "Description :${exam.description}",
               style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 30),
             Customboldtext(text: "Questions", fontValue: 24),
             const SizedBox(height: 10),
-            ...questions.asMap().entries.map((entry) {
+            ...exam.questionModels.asMap().entries.map((entry) {
               int idx = entry.key;
               QuestionModel q = entry.value;
 
@@ -97,7 +90,7 @@ class QuizReviewPage extends StatelessWidget {
 
   Widget _buildMCQPreview(QuestionModel q) {
     return Column(
-      children: List.generate(q.optionControllers.length, (i) {
+      children: List.generate(q.options.length, (i) {
         bool isCorrect = q.correctOptionIndexes.contains(i);
 
         return Container(
@@ -121,7 +114,7 @@ class QuizReviewPage extends StatelessWidget {
               ),
               const SizedBox(width: 10),
 
-              Expanded(child: Text(q.optionControllers[i].text)),
+              Expanded(child: Text(q.options[i])),
 
               if (isCorrect)
                 const Text(

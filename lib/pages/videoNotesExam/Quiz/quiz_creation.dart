@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/question_review_page.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/question_typesheet.dart';
@@ -111,31 +112,31 @@ class _QuizCreationState extends State<QuizCreation> {
               const SizedBox(height: 10),
               Custombuttonone(
                 text: "Review ",
-                onTap: () {
-                  if (_titleController.text.trim().isEmpty) {
-                    AppSnackBar.show(
-                      context,
-                      message: "Enter a title",
-                      type: SnackType.error,
-                    );
-                  } else if (_questions.isEmpty) {
-                    AppSnackBar.show(
-                      context,
-                      message: "Have atleast one question ",
-                    );
-                  } else {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QuizReviewPage(
-                          title: _titleController.text,
-                          description: _descriptionController.text,
-                          questions: _questions,
-                        ),
-                      ),
-                    );
-                  }
-                },
+               onTap: () {
+  if (_titleController.text.trim().isEmpty) {
+    AppSnackBar.show(
+      context,
+      message: "Enter a title",
+      type: SnackType.error,
+    );
+  } else if (_questions.isEmpty) {
+    AppSnackBar.show(
+      context,
+      message: "Have atleast one question ",
+    );
+  } else {
+    final exam = _buildExam();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuizReviewPage(
+          exam: exam, 
+        ),
+      ),
+    );
+  }
+}
               ),
             ],
           ),
@@ -143,6 +144,15 @@ class _QuizCreationState extends State<QuizCreation> {
       ),
     );
   }
+  Exam _buildExam() {
+  return Exam(
+    title: _titleController.text.trim(),
+    description: _descriptionController.text.trim(),
+    unitId: widget.unitId,
+    subjectId: "ID", 
+    questionModels: _questions,
+  );
+}
 }
 
 class TextQuestionCard extends StatelessWidget {
@@ -198,7 +208,7 @@ class TextQuestionCard extends StatelessWidget {
               const SizedBox(height: 8),
               Text(
                 question.type == QuestionType.multipleChoice
-                    ? "${question.correctOptionIndexes.length} correct / ${question.optionControllers.length} options"
+                    ? "${question.correctOptionIndexes.length} correct / ${question.options.length} options"
                     : "Answer: ${question.answer.isEmpty ? "Not specified" : question.answer}",
                 style: const TextStyle(color: Colors.redAccent),
               ),
@@ -380,56 +390,63 @@ Widget buildMCQEditor({
       const SizedBox(height: 10),
 
       ...List.generate(
-        question.optionControllers.length,
-        (i) => Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: Row(
-            children: [
-              Checkbox(
-                value: question.correctOptionIndexes.contains(i),
-                onChanged: (v) {
-                  setSheetState(() {
-                    if (v == true &&
-                        !question.correctOptionIndexes.contains(i)) {
-                      question.correctOptionIndexes.add(i);
-                    } else {
-                      question.correctOptionIndexes.remove(i);
-                    }
-                  });
-                  onUpdate();
-                },
-              ),
+        question.options.length,
+        (i) {
+          final controller = TextEditingController(text: question.options[i]);
 
-              Expanded(
-                child: TextField(
-                  controller: question.optionControllers[i],
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: question.correctOptionIndexes.contains(i),
+                  onChanged: (v) {
+                    setSheetState(() {
+                      if (v == true &&
+                          !question.correctOptionIndexes.contains(i)) {
+                        question.correctOptionIndexes.add(i);
+                      } else {
+                        question.correctOptionIndexes.remove(i);
+                      }
+                    });
+                    onUpdate();
+                  },
+                ),
+
+                Expanded(
+                  child: TextField(
+                    controller: controller,
+                    onChanged: (val) {
+                      question.options[i] = val;
+                    },
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: "Option ${i + 1}",
                     ),
-                    hintText: "Option ${i + 1}",
                   ),
                 ),
-              ),
 
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () {
-                  setSheetState(() {
-                    question.optionControllers.removeAt(i);
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    setSheetState(() {
+                      question.options.removeAt(i);
 
-                    question.correctOptionIndexes = question
-                        .correctOptionIndexes
-                        .where((index) => index != i)
-                        .map((index) => index > i ? index - 1 : index)
-                        .toList();
-                  });
-                  onUpdate();
-                },
-              ),
-            ],
-          ),
-        ),
+                      question.correctOptionIndexes = question
+                          .correctOptionIndexes
+                          .where((index) => index != i)
+                          .map((index) => index > i ? index - 1 : index)
+                          .toList();
+                    });
+                    onUpdate();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
 
       TextButton.icon(
@@ -437,7 +454,7 @@ Widget buildMCQEditor({
         label: const Text("Add option"),
         onPressed: () {
           setSheetState(() {
-            question.optionControllers.add(TextEditingController());
+            question.options.add('');
           });
           onUpdate();
         },
@@ -542,3 +559,4 @@ Widget buildImageSection(
     ],
   );
 }
+

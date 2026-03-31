@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_attend_page.dart';
 import 'package:learning_admin_app/widgets/Cards/exam_card.dart';
@@ -29,12 +30,7 @@ class StudentExams extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ExamAttemptPage(
-                              title: "Reverend Insanity — Fang Yuan Arc",
-                              description:
-                                  "Test your knowledge of the demon Gu Master's journey.",
-                              questions: getReverendInsanityQuestions(),
-                            ),
+                            builder: (_) => ExamAttemptPage(exam: _buildExam()),
                           ),
                         );
                       },
@@ -50,6 +46,16 @@ class StudentExams extends StatelessWidget {
       ),
     );
   }
+}
+
+Exam _buildExam() {
+  return Exam(
+    title: "Reverend Insanity — Fang Yuan Arc",
+    description: "Test your knowledge of the demon Gu Master's journey.",
+    unitId: " unitId",
+    subjectId: "demo_subject",
+    questionModels: getReverendInsanityQuestions(),
+  );
 }
 
 List<QuestionModel> getReverendInsanityQuestions() {

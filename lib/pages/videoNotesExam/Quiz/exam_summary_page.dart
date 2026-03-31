@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
+import 'package:learning_admin_app/models/student_quiz_response.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_attend_page.dart';
 
 class ExamSummaryPage extends StatelessWidget {
-  final String title;
-  final List<QuestionModel> questions;
+  final Exam exam;
   final List<StudentResponse> responses;
 
   const ExamSummaryPage({
     super.key,
-    required this.title,
-    required this.questions,
+    required this.exam,
     required this.responses,
   });
 
-  int get _answeredCount {
-    int count = 0;
-    for (int i = 0; i < questions.length; i++) {
-      final q = questions[i];
-      final r = responses[i];
-      if (q.type == QuestionType.multipleChoice) {
-        if (r.selectedOptionIndexes.isNotEmpty) count++;
-      } else {
-        if (r.textAnswer.trim().isNotEmpty) count++;
-      }
-    }
-    return count;
-  }
+ int get _answeredCount {
+  int count = 0;
+  for (int i = 0; i < exam.questionModels.length; i++) {
+    final q = exam.questionModels[i];
+    final r = responses[i];
 
-  int get _totalMarks => questions.fold(0, (sum, q) => sum + q.marks);
+    if (q.type == QuestionType.multipleChoice) {
+      if (r.selectedOptionIndexes.isNotEmpty) count++;
+    } else {
+      if (r.textAnswer.trim().isNotEmpty) count++;
+    }
+  }
+  return count;
+}
+
+  int get _totalMarks =>
+    exam.questionModels.fold(0, (sum, q) => sum + q.marks);
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,6 @@ class ExamSummaryPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Summary header card
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
             child: Card(
@@ -55,7 +56,8 @@ class ExamSummaryPage extends StatelessWidget {
                     Expanded(
                       child: _SummaryTile(
                         label: "Answered",
-                        value: "$_answeredCount / ${questions.length}",
+                        value:
+                            "$_answeredCount / ${exam.questionModels.length}",
                         icon: Icons.check_circle_outline,
                         color: Colors.green,
                       ),
@@ -73,7 +75,7 @@ class ExamSummaryPage extends StatelessWidget {
                     Expanded(
                       child: _SummaryTile(
                         label: "Skipped",
-                        value: "${questions.length - _answeredCount}",
+                        value: "${exam.questionModels.length - _answeredCount}",
                         icon: Icons.radio_button_unchecked,
                         color: Colors.redAccent,
                       ),
@@ -88,9 +90,9 @@ class ExamSummaryPage extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-              itemCount: questions.length,
+              itemCount: exam.questionModels.length,
               itemBuilder: (_, i) {
-                final q = questions[i];
+                final q = exam.questionModels[i];
                 final r = responses[i];
                 final answered = q.type == QuestionType.multipleChoice
                     ? r.selectedOptionIndexes.isNotEmpty
@@ -187,7 +189,7 @@ class ExamSummaryPage extends StatelessWidget {
   String _getResponsePreview(QuestionModel q, StudentResponse r) {
     if (q.type == QuestionType.multipleChoice) {
       final selected = r.selectedOptionIndexes
-          .map((i) => q.optionControllers[i].text)
+          .map((i) => q.options[i])
           .join(', ');
       return selected;
     }

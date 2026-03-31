@@ -12,7 +12,7 @@ Future<List<Note>> notesGet({
   required String token,
   required String unitId,
 }) async {
-  final uri = Uri.parse("$_baseUrl/units/notes?unit_id=$unitId");
+  final uri = Uri.parse("$_baseUrl/unit/notes?unit_id=$unitId");
   final response = await http.get(
     uri,
     headers: {"Authorization": "Bearer $token"},

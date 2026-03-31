@@ -1,35 +1,56 @@
-
 import 'package:learning_admin_app/models/question_model.dart';
 
-class Exam{
+class Exam {
   final String title;
-  final String? Description;
-  final String unit_id;
-  final String subject_id;
-  final QuestionModel<List> questionModels;
+  final String? description;
+  final String unitId;
+  final String subjectId;
+  final List<QuestionModel> questionModels;
 
   Exam({
     required this.title,
     required this.questionModels,
-    required this.unit_id,
-    required this.subject_id,
-    this.Description,
+    required this.unitId,
+    required this.subjectId,
+    this.description,
   });
-  factory Exam.fromJson(Map<String,dynamic> json){
-    return Exam(
-      subject_id: json['subject_id'],
-      title: json['title'], 
-      subject_image: json['subject_image'],
-      course_id: json['course_id'],);
 
+  factory Exam.fromJson(Map<String, dynamic> json) {
+    return Exam(
+      subjectId: json['subject_id'],
+      title: json['title'],
+      unitId: json['unit_id'],
+      questionModels:json['questions'],
+      //  (json['questions'] as List)
+          // .map((q) => QuestionModel.fromJson(q))
+          // .toList(),
+      description: json['description'],
+    );
   }
-  Map<String,dynamic>toJson(){
+
+  Map<String, dynamic> toJson() {
     return {
       'title': title,
-      'subject_id':subject_id,
-      'subject_image': subject_image,
-       'course_id': course_id,
+      'subject_id': subjectId,
+      'unit_id': unitId,
+      // 'questions': questionModels.map((q) => q.toJson()).toList(),
+      'description': description,
     };
   }
 
+  Exam copyWith({
+    String? title,
+    String? description,
+    String? unitId,
+    String? subjectId,
+    List<QuestionModel>? questionModels,
+  }) {
+    return Exam(
+      title: title ?? this.title,
+      description: description ?? this.description,
+      unitId: unitId ?? this.unitId,
+      subjectId: subjectId ?? this.subjectId,
+      questionModels: questionModels ?? this.questionModels,
+    );
+  }
 }

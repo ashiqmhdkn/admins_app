@@ -112,7 +112,7 @@ Future<List<Map<String, dynamic>>> batchRequestsGet({
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final list = data['requests']?['results'] ?? data['requests'] ?? [];
+      final list = data['requests'] ?? [];
       return List<Map<String, dynamic>>.from(list);
     }
     return [];

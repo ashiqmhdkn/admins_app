@@ -112,5 +112,52 @@ Future<List<Video>> videosGet({required String token, required unit_id}) async {
     print("headers:...............................................");
     print('❌ Error in videosGet: $e');
     rethrow;
+  }}
+Future<bool> VideoDelete({
+  required String token,
+  required String VideoId,
+}) async {
+  final uri = Uri.parse("$baseUrl/unit/videos");
+  final response = await http.delete(
+    uri,
+    headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    },
+    body: jsonEncode({"video_id": VideoId}),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return data["success"] == true;
+  } else {
+    print(response);
+    throw Exception("Failed to delete note: ${response.body}");
+  }}
+  Future<bool> VideoPut({
+  required String token,
+  required String VideoId,
+  required String title,
+  required String description,
+}) async {
+  final uri = Uri.parse("$baseUrl/unit/videos");
+  final response = await http.put(
+    uri,
+    headers: {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+    },
+    body: jsonEncode({"video_id": VideoId,
+    "title":title,
+    "desc":description
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body);
+    return data["success"] == true;
+  } else {
+    print(response);
+    throw Exception("Failed to delete video: ${response.body}");
   }
 }

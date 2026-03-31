@@ -120,18 +120,15 @@ class VideoProvider extends AsyncNotifier<List<Video>> {
     if (success) await refresh();
     return success;
   }
+
+  // Delete video
+  Future<bool> deleteVideo(String videoId) async {
+        final token = await ref.read(authTokenProvider.future);
+    final success = await VideoDelete(VideoId: videoId,token: token!);
+    if (success) await ();
+    return success;
+  }
 }
-
-//   // Delete video
-//   Future<bool> deleteVideo(String videoId) async {
-//     final service = ref.read(videoServiceProvider);
-
-//     final success = await service.deleteVideo(videoId);
-
-//     if (success) await refresh();
-//     return success;
-//   }
-// }
 
 final videosNotifierProvider =
     AsyncNotifierProvider<VideoProvider, List<Video>>(() => VideoProvider());

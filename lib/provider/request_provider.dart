@@ -16,6 +16,9 @@ class BatchRequest {
   final String studentId;
   final String status;
   final String createdAt;
+  final String name;
+  final String email;
+  final String image;
 
   BatchRequest({
     required this.requestId,
@@ -23,6 +26,9 @@ class BatchRequest {
     required this.studentId,
     required this.status,
     required this.createdAt,
+    required this.email,
+    required this.image,
+    required this.name,
   });
 
   factory BatchRequest.fromJson(Map<String, dynamic> json) => BatchRequest(
@@ -31,6 +37,9 @@ class BatchRequest {
     studentId: json['student_id'] ?? '',
     status: json['status'] ?? '',
     createdAt: json['created_at'] ?? '',
+    image: json['image']??'',
+    email: json['email']??'',
+    name: json['name']??'',
   );
 }
 

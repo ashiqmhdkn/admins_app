@@ -251,8 +251,7 @@ class _RequestCard extends StatelessWidget {
             // Avatar
             CircleAvatar(
               radius: 28,
-              backgroundColor: Colors.grey.shade200,
-              child: Icon(Icons.person, size: 30, color: Colors.grey.shade500),
+              backgroundImage:NetworkImage(request.image),
             ),
             const SizedBox(width: 12),
 

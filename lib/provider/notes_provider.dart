@@ -20,8 +20,8 @@ class NotesNotifier extends AsyncNotifier<List<Note>> {
     print("token: $token");
     return notesGet(token: token!, unitId: unitId);
   }
-void setunit_id(String unitId) {
-    this.unitId = unitId;
+void setunit_id(String unit) {
+    unitId = unit;
     ref.invalidateSelf();
   }
 

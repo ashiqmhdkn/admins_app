@@ -81,7 +81,7 @@ class _notesState extends ConsumerState<AdminSubjectNotes> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (_) =>
-                                    SecurePdfViewer(noteId: note.noteId),
+                                    SecurePdfViewer(noteurl: note.filePath!,name: note.title,),
                               ),
                             );
                           },

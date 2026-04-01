@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:learning_admin_app/pages/Courses/admin_courses.dart';
 import 'package:learning_admin_app/pages/admin_dashboard.dart';
-import 'package:learning_admin_app/pages/admin_payments.dart';
 import 'package:learning_admin_app/pages/admin_staff.dart';
+import 'package:learning_admin_app/test.dart';
 
 class Adminnav extends StatefulWidget {
   const Adminnav({super.key});
@@ -18,7 +18,7 @@ class _AdminnavState extends State<Adminnav>
   int _previousIndex = 0;
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
-  final _pages = const [AdminDashboard(), AdminCourses(), AdminStaff(),AdminPayments()];
+  final _pages = const [AdminDashboard(), AdminCourses(), AdminStaff(), Test()];
 
   @override
   void initState() {

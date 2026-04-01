@@ -1,89 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:learning_admin_app/pages/videoNotesExam/Notes/update_note.dart';
-import 'package:learning_admin_app/provider/notes_provider.dart';
-import 'package:learning_admin_app/pages/videoNotesExam/Notes/securePdfViewer.dart';
-import 'package:learning_admin_app/widgets/Cards/notes_card.dart';
+import 'package:learning_admin_app/pages/videoNotesExam/Videos/video_playback.dart';
+import 'package:learning_admin_app/pages/videoNotesExam/Videos/video_update.dart';
+import 'package:learning_admin_app/provider/video_provider.dart';
+import 'package:learning_admin_app/widgets/Cards/video_selection_card.dart';
 
-class AdminSubjectNotes extends ConsumerStatefulWidget {
+class AdminSubjectVideos extends ConsumerStatefulWidget {
   final String unitName;
-  final String unitId;
-  const AdminSubjectNotes({
+  final String unit_id;
+  const AdminSubjectVideos({
     super.key,
     required this.unitName,
-    required this.unitId,
+    required this.unit_id,
   });
-  ConsumerState<AdminSubjectNotes> createState() => _notesState();
+  ConsumerState<AdminSubjectVideos> createState() => _AdminSubjectsState();
 }
 
-class _notesState extends ConsumerState<AdminSubjectNotes> {
+class _AdminSubjectsState extends ConsumerState<AdminSubjectVideos> {
   @override
   void initState() {
     super.initState();
+    // Set courseId only once when widget is created
     Future.microtask(() {
-      ref.read(notesNotifierProvider.notifier).setunit_id(widget.unitId);
-      print("working notes fetch request");
+      ref.read(videosNotifierProvider.notifier).setUnitId(widget.unit_id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final notesAsync = ref.watch(notesNotifierProvider);
+    final VideoProvider = ref.watch(videosNotifierProvider);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: AnimationLimiter(
-          child: notesAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, stack) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 48, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error: $error',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      ref.invalidate(notesNotifierProvider);
-                    },
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            ),
-
-            data: (notes) {
-              if (notes.isEmpty) {
-                return const Center(child: Text("No Notes availale"));
+          child: VideoProvider.when(
+            data: (Videos) {
+              if (Videos.isEmpty) {
+                return const Center(child: Text('No Videos available'));
               }
               return ListView.builder(
                 physics: const BouncingScrollPhysics(),
-                itemCount: notes.length,
+                itemCount: Videos.length,
                 itemBuilder: (context, index) {
-                  final note = notes[index];
-
+                  final video = Videos[index];
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     child: SlideAnimation(
                       duration: const Duration(milliseconds: 400),
                       child: FadeInAnimation(
-                        child: AdminSubjectNotesCard(
-                          title: note.title,
-                          subtitle: "Description",
+                        child: AdminVideoSelectionCard(
+                          title: video.title,
+                          subtitle: video.description,
+                          imagelocation: video.thumbnail_url,
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (_) => SecurePdfViewer(
-                                  noteurl: note.filePath!,
-                                  name: note.title,
+                                builder: (_) => Videoplayback(
+                                  url: video.video_url,
+                                  title: "",
+                                  description: "",
                                 ),
+                              ),
+                            );
+                          },
+                          onEdit: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              showDragHandle: true,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).scaffoldBackgroundColor,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(20),
+                                ),
+                              ),
+                              builder: (context) => VideoUpdate(
+                                unitid: widget.unit_id,
+                                title: video.title,
+                                subtitle: video.description,
+                                imagelocation: video.thumbnail_url,
                               ),
                             );
                           },
@@ -102,7 +101,7 @@ class _notesState extends ConsumerState<AdminSubjectNotes> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const Text(
-                                        "Delete Note?",
+                                        "Delete video?",
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
@@ -149,33 +148,13 @@ class _notesState extends ConsumerState<AdminSubjectNotes> {
 
                             if (confirm == true) {
                               await ref
-                                  .read(notesNotifierProvider.notifier)
-                                  .deleteNote(noteId: note.noteId);
+                                  .read(videosNotifierProvider.notifier)
+                                  .deleteVideo(video.video_id);
 
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Note deleted")),
+                                const SnackBar(content: Text("video deleted")),
                               );
                             }
-                          },
-                          onEdit: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              showDragHandle: true,
-                              backgroundColor: Theme.of(
-                                context,
-                              ).scaffoldBackgroundColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(20),
-                                ),
-                              ),
-                              builder: (context) => UpdateNote(
-                                unitId: widget.unitId,
-                                title: note.title,
-                                description: "",
-                              ),
-                            );
                           },
                         ),
                       ),
@@ -184,6 +163,8 @@ class _notesState extends ConsumerState<AdminSubjectNotes> {
                 },
               );
             },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, stack) => Center(child: Text('Error: $error')),
           ),
         ),
       ),

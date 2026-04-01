@@ -3,9 +3,9 @@ import 'package:custom_sliding_segmented_control/custom_sliding_segmented_contro
 import 'package:learning_admin_app/pages/exam/exam.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/quiz_creation.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Notes/add_note.dart';
-import 'package:learning_admin_app/pages/videoNotesExam/add_video.dart';
+import 'package:learning_admin_app/pages/videoNotesExam/Videos/add_video.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Notes/notes.dart';
-import 'package:learning_admin_app/pages/videoNotesExam/videos.dart';
+import 'package:learning_admin_app/pages/videoNotesExam/Videos/videos.dart';
 
 class VideoNotesExam extends StatefulWidget {
   final String unitName;

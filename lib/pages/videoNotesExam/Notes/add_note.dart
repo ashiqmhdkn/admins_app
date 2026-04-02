@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/provider/notes_provider.dart';
+import 'package:learning_admin_app/utils/app_snackbar.dart';
 
 class AddNotes extends ConsumerStatefulWidget {
   final String unitId;
@@ -57,11 +58,11 @@ class _AddNotesState extends ConsumerState<AddNotes> {
       if (result) {
         Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("failed to create notes"),
-            backgroundColor: Colors.red,
-          ),
+        AppSnackBar.show(
+          context,
+          showAtTop: true,
+           message:"failed to create notes ",
+            type:SnackType.error,
         );
       }
     });

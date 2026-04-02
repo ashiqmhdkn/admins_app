@@ -35,15 +35,16 @@ Future<bool> notesPost({
   required String title,
   required File file,
 }) async {
-  final uri = Uri.parse("$_baseUrl/units/notes");
+  final uri = Uri.parse("$_baseUrl/unit/notes");
 
   final request = http.MultipartRequest("POST", uri)
     ..headers["Authorization"] = "Bearer $token"
     ..fields["unit_id"] = unitId
     ..fields["title"] = title;
     request.files.add(await http.MultipartFile.fromPath("file", file.path));
-  print(request);
+  print(request.url);
   print(request.fields);
+  print(file);
   final streamed = await request.send();
   final response = await http.Response.fromStream(streamed);
 
@@ -51,6 +52,7 @@ Future<bool> notesPost({
     final data = jsonDecode(response.body);
     return data["success"] == true;
   } else {
+    print(response.body);
     throw Exception("Failed to create note: ${response.body}");
   }
 }
@@ -62,7 +64,7 @@ Future<bool> notesPut({
   String? title,
   File? file,
 }) async {
-  final uri = Uri.parse("$_baseUrl/units/notes");
+  final uri = Uri.parse("$_baseUrl/unit/notes");
 
   final request = http.MultipartRequest("PUT", uri)
     ..headers["Authorization"] = "Bearer $token"
@@ -90,7 +92,7 @@ Future<bool> notesDelete({
   required String token,
   required String noteId,
 }) async {
-  final uri = Uri.parse("$_baseUrl/units/notes");
+  final uri = Uri.parse("$_baseUrl/unit/notes");
 
   final response = await http.delete(
     uri,

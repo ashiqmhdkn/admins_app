@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/provider/notes_provider.dart';
 
 class UpdateNote extends ConsumerStatefulWidget {
-  final String unitId;
+  final String noteId;
   final String title;
   final String description;
   const UpdateNote({
     super.key,
-    required this.unitId,
+    required this.noteId,
     required this.title,
     required this.description,
   });
@@ -54,8 +54,7 @@ class _UpdateNoteState extends ConsumerState<UpdateNote> {
 
     setState(() => _isUploading = true);
     final result = await ref
-        .read(notesNotifierProvider.notifier)
-        .createNote(title: _titleController.text.trim(), file: pdfFile!);
+        .read(notesNotifierProvider.notifier).updateNote(title: _titleController.text.trim(), file: pdfFile!,noteId: widget.noteId);
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
 

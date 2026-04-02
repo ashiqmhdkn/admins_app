@@ -171,7 +171,7 @@ class _notesState extends ConsumerState<AdminSubjectNotes> {
                                 ),
                               ),
                               builder: (context) => UpdateNote(
-                                unitId: widget.unitId,
+                                noteId: note.noteId,
                                 title: note.title,
                                 description: "",
                               ),

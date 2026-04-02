@@ -83,6 +83,7 @@ class _AdminSubjectsState extends ConsumerState<AdminSubjectVideos> {
                                 title: video.title,
                                 subtitle: video.description,
                                 imagelocation: video.thumbnail_url,
+                                videoid: video.video_id,
                               ),
                             );
                           },

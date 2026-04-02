@@ -7,6 +7,7 @@ import 'package:learning_admin_app/provider/video_provider.dart';
 import 'package:learning_admin_app/utils/app_snackbar.dart';
 
 class VideoUpdate extends ConsumerStatefulWidget {
+  final String videoid;
   final String unitid;
   final String title;
   final String subtitle;
@@ -14,10 +15,11 @@ class VideoUpdate extends ConsumerStatefulWidget {
 
   const VideoUpdate({
     super.key,
-    required this.unitid,
+    required this.videoid,
     required this.title,
     required this.subtitle,
     required this.imagelocation,
+    required this.unitid,
   });
 
   @override
@@ -50,7 +52,6 @@ class _VideoUpdateState extends ConsumerState<VideoUpdate> {
     _titleController.text = widget.title;
     _descriptionController.text = widget.subtitle;
     Future.microtask(() {
-      ref.read(notesNotifierProvider.notifier).setunit_id(widget.unitid);
       ref.read(videosNotifierProvider.notifier).setUnitId(widget.unitid);
     });
     super.initState();
@@ -76,15 +77,10 @@ class _VideoUpdateState extends ConsumerState<VideoUpdate> {
     try {
       final result = await ref
           .read(videosNotifierProvider.notifier)
-          .uploadVideo(
-            videoFile: videoFile!,
+          .updateVideo(
+            VideoId: widget.videoid,
             title: _titleController.text,
-            description: _descriptionController.text,
-            onProgress: (sent, total) {
-              setState(() {
-                _uploadProgress = sent / total;
-              });
-            },
+            description: _descriptionController.text
           );
 
       if (!mounted) return;

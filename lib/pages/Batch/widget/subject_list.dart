@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:learning_admin_app/pages/Batch/widget/batch_course_card.dart';
 import 'package:learning_admin_app/pages/Subjects/edit_subject.dart';
 import 'package:learning_admin_app/provider/subjects_provider.dart';
 import 'package:learning_admin_app/widgets/Cards/course_card.dart';
 
 class SubjectList extends ConsumerStatefulWidget {
   final String courseId;
-  const SubjectList({
-    super.key,
-    required this.courseId
-  });
-  @override ConsumerState<SubjectList> createState()=>_SubjecList();}
+  const SubjectList({super.key, required this.courseId});
+  @override
+  ConsumerState<SubjectList> createState() => _SubjecList();
+}
 
-class _SubjecList extends ConsumerState<SubjectList>{
+class _SubjecList extends ConsumerState<SubjectList> {
   @override
   void initState() {
     super.initState();
-    ref.read(subjectsNotifierProvider.notifier).setcourse_id(widget.courseId);    
-    
+    ref.read(subjectsNotifierProvider.notifier).setcourse_id(widget.courseId);
   }
 
   @override
@@ -32,8 +31,8 @@ class _SubjecList extends ConsumerState<SubjectList>{
         }
         return AnimationLimiter(
           child: ListView.builder(
-             shrinkWrap: true,
-  physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
             itemCount: subjects.length,
             itemBuilder: (context, index) {
               final subject = subjects[index];
@@ -42,7 +41,9 @@ class _SubjecList extends ConsumerState<SubjectList>{
                 child: SlideAnimation(
                   duration: const Duration(milliseconds: 400),
                   child: FadeInAnimation(
-                    child: CourseCard(
+                    child: BatchCourseCard(
+                      onToggle: (value) {},
+                      isEnabled: true,
                       onDelete: () async {
                         final confirm = await showModalBottomSheet<bool>(
                           context: context,

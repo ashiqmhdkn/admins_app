@@ -5,8 +5,9 @@ import 'package:learning_admin_app/pages/Batch/widget/subject_list.dart';
 import 'package:learning_admin_app/widgets/Custom/custom_primary_text.dart';
 
 class BatchDetails extends StatefulWidget {
+  final String courseId;
   final Batch batch;
-  BatchDetails({super.key, required this.batch});
+  BatchDetails({super.key, required this.courseId, required this.batch});
 
   @override
   State<BatchDetails> createState() => _BatchDetailsState();
@@ -90,7 +91,7 @@ class _BatchDetailsState extends State<BatchDetails> {
               child: Customprimarytext(text: "Subjects", fontValue: 17),
             ),
 
-            SubjectList(),
+             SubjectList(courseId: widget.courseId,),
           ],
         ),
       ),

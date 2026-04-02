@@ -1,6 +1,7 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
+import 'package:learning_admin_app/pages/Batch/widget/studentinbatch.dart';
 import 'package:learning_admin_app/pages/Batch/widget/studentrequest.dart';
 import 'package:learning_admin_app/widgets/Custom/custom_appbar.dart';
 
@@ -95,7 +96,7 @@ class _StudentsTabWrapperState extends State<StudentsTabWrapper> {
                 batchId: widget.batchId,
                 batchName: widget.batchName,
               ),
-              StudentAcceptedPlaceholder(),
+              StudentAccepted( BatchId: widget.batchId,),
             ],
           ),
         ),
@@ -104,9 +105,3 @@ class _StudentsTabWrapperState extends State<StudentsTabWrapper> {
   }
 }
 
-class StudentAcceptedPlaceholder extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Accepted Students"));
-  }
-}

@@ -69,6 +69,7 @@ class _AdminbatchState extends ConsumerState<Adminbatch> {
   }
 
   Widget _buildBatchsGrid() {
+    String course_id=widget.courseId;
     final batchsAsync = ref.watch(batchsNotifierProvider);
     return Padding(
       padding: const EdgeInsets.all(12),
@@ -261,7 +262,7 @@ class _AdminbatchState extends ConsumerState<Adminbatch> {
                         },
                         onTap: () {
                           // Navigate to lessons page
-                          context.push('/batchdetails',extra: batch);
+                          context.push('/batchdetails/$course_id',extra: batch);
                         },
                       ),
                     ),

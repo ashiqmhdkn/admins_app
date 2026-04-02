@@ -17,7 +17,7 @@ Future<List<Subject>> subjectsget({required String token,required String course_
         HttpHeaders.authorizationHeader: 'Bearer $token',
       },
     );
-    
+        print("course id:$course_id");
     print('GET subjects Response: ${response.statusCode}');
     print('GET subjects Body: ${response.body}');
     
@@ -64,7 +64,6 @@ Future<bool> subjectspost({
     
     print("POST Status: ${res.statusCode}");
     print("POST Body: ${res.body}");
-
     if (res.statusCode == 200 || res.statusCode == 201) {
       final Map<String, dynamic> data = jsonDecode(res.body);
       return data['success'] == true;

@@ -1,15 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
+import 'package:learning_admin_app/provider/exam_provider.dart';
 import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
+import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
 import 'package:learning_admin_app/widgets/admin_appbar.dart';
 
-class QuizReviewPage extends StatelessWidget {
+class QuizReviewPage extends ConsumerStatefulWidget {
   final Exam exam;
 
   const QuizReviewPage({super.key, required this.exam});
-
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState()=>_QuizReviewPage();
+}
+class _QuizReviewPage extends ConsumerState<QuizReviewPage>{ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,17 +26,17 @@ class QuizReviewPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Title : ${exam.title}",
+              "Title : ${widget.exam.title}",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             Text(
-              "Description :${exam.description}",
+              "Description :${widget.exam.description}",
               style: const TextStyle(fontSize: 16, color: Colors.grey),
             ),
             const SizedBox(height: 30),
             Customboldtext(text: "Questions", fontValue: 24),
             const SizedBox(height: 10),
-            ...exam.questionModels.asMap().entries.map((entry) {
+            ...widget.exam.questionModels.asMap().entries.map((entry) {
               int idx = entry.key;
               QuestionModel q = entry.value;
 
@@ -82,6 +88,16 @@ class QuizReviewPage extends StatelessWidget {
                 ),
               );
             }),
+            Center(
+              child: Custombuttonone(text: "Submit", onTap: ()async{
+                final examId = await ref
+              .read(createExamProvider.notifier)
+              .createExam(widget.exam);
+                if (examId != null) {          
+                  print("exam udpat null");
+                }
+              }),
+            )
           ],
         ),
       ),

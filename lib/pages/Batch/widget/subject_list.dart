@@ -6,19 +6,34 @@ import 'package:learning_admin_app/pages/Subjects/edit_subject.dart';
 import 'package:learning_admin_app/provider/subjects_provider.dart';
 import 'package:learning_admin_app/widgets/Cards/course_card.dart';
 
-class SubjectList extends ConsumerWidget {
-  const SubjectList({super.key});
+class SubjectList extends ConsumerStatefulWidget {
+  final String courseId;
+  const SubjectList({
+    super.key,
+    required this.courseId
+  });
+  @override ConsumerState<SubjectList> createState()=>_SubjecList();}
+
+class _SubjecList extends ConsumerState<SubjectList>{
+  @override
+  void initState() {
+    super.initState();
+    ref.read(subjectsNotifierProvider.notifier).setcourse_id(widget.courseId);    
+    
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final subjectsState = ref.watch(subjectsNotifierProvider);
     return subjectsState.when(
       data: (subjects) {
         if (subjects.isEmpty) {
-          return const Center(child: const Text('No Subjects available'));
+          return const Center(child: Text('No Subjects available'));
         }
         return AnimationLimiter(
           child: ListView.builder(
+             shrinkWrap: true,
+  physics: NeverScrollableScrollPhysics(),
             itemCount: subjects.length,
             itemBuilder: (context, index) {
               final subject = subjects[index];
@@ -120,7 +135,7 @@ class SubjectList extends ConsumerWidget {
           ),
         );
       },
-      loading: () => const Center(child: const CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }

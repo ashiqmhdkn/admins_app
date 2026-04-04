@@ -1,31 +1,35 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
+import 'package:learning_admin_app/models/examresponse_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
-import 'package:learning_admin_app/models/student_quiz_response.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_summary_page.dart';
 
 class ExamAttemptPage extends StatefulWidget {
   final Exam exam;
+  final String studentId;
 
-  const ExamAttemptPage({super.key, required this.exam});
+  const ExamAttemptPage({
+    super.key,
+    required this.exam,
+    required this.studentId,
+  });
 
   @override
   State<ExamAttemptPage> createState() => _ExamAttemptPageState();
 }
 
 class _ExamAttemptPageState extends State<ExamAttemptPage> {
-  late List<StudentResponse> _responses;
+  late List<QuestionResponse> _responses;
   final PageController _pageController = PageController();
   int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _responses = List.generate(
-      widget.exam.questionModels.length,
-      (_) => StudentResponse(),
-    );
+    _responses = widget.exam.questionModels
+        .map(QuestionResponse.forQuestion)
+        .toList();
   }
 
   void _goToNext() {
@@ -50,28 +54,23 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
     for (int i = 0; i < widget.exam.questionModels.length; i++) {
       final q = widget.exam.questionModels[i];
       final r = _responses[i];
-      if (q.isRequired) {
-        if (q.type == QuestionType.multipleChoice &&
-            r.selectedOptionIndexes.isEmpty) {
-          _showValidationError(
-            i,
-            "Please select an option for question ${i + 1}",
-          );
-          return;
-        }
-        if (q.type != QuestionType.multipleChoice &&
-            r.textAnswer.trim().isEmpty) {
-          _showValidationError(i, "Please answer question ${i + 1}");
-          return;
-        }
+      if (q.isRequired && !r.hasAnswer) {
+        _showValidationError(i, "Please answer question ${i + 1}");
+        return;
       }
     }
+
+    final examResponse = ExamResponse.fromAttempt(
+      exam: widget.exam,
+      responses: _responses,
+      studentId: widget.studentId,
+      responseId: 'resp_${DateTime.now().millisecondsSinceEpoch}',
+    );
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) =>
-            ExamSummaryPage(exam: widget.exam, responses: _responses),
+        builder: (_) => ExamSummaryPage(examResponse: examResponse),
       ),
     );
   }
@@ -92,15 +91,64 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
     );
   }
 
+  // ── Helpers ───────────────────────────────────────────────────────────────
+
+  bool _isAnswered(int i) => _responses[i].hasAnswer;
+
+  void _updateResponse(int index, QuestionResponse updated) {
+    setState(() => _responses[index] = updated);
+  }
+
+  void _showQuestionOverview() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _QuestionOverviewSheet(
+        questions: widget.exam.questionModels,
+        currentIndex: _currentIndex,
+        isAnswered: _isAnswered,
+        onNavigate: (i) {
+          Navigator.pop(context);
+          _pageController.animateToPage(
+            i,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        },
+      ),
+    );
+  }
+
+  // ── Build ─────────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     final total = widget.exam.questionModels.length;
     final progress = total == 0 ? 0.0 : (_currentIndex + 1) / total;
+    final answeredCount = List.generate(
+      total,
+      (i) => i,
+    ).where(_isAnswered).length;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.exam.title),
         scrolledUnderElevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: TextButton.icon(
+              onPressed: _showQuestionOverview,
+              icon: const Icon(Icons.grid_view_rounded, size: 18),
+              label: Text(
+                "$answeredCount/$total",
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              style: TextButton.styleFrom(visualDensity: VisualDensity.compact),
+            ),
+          ),
+        ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4),
           child: TweenAnimationBuilder<double>(
@@ -133,7 +181,7 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.primaryContainer.withOpacity(0.5),
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
@@ -146,41 +194,55 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
                   ),
                 ),
                 const Spacer(),
-                SizedBox(
-                  height: 28,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: total,
-                    itemBuilder: (_, i) {
-                      final isActive = i == _currentIndex;
-                      final isAnswered = _isAnswered(i);
-                      return GestureDetector(
-                        onTap: () => _pageController.animateToPage(
-                          i,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        ),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          margin: const EdgeInsets.symmetric(horizontal: 3),
-                          width: isActive ? 20 : 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: isActive
-                                ? Theme.of(context).colorScheme.primary
-                                : isAnswered
-                                ? Theme.of(
-                                    context,
-                                  ).colorScheme.primary.withOpacity(0.4)
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.outline.withOpacity(0.3),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 160),
+                  child: SizedBox(
+                    height: 28,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: total,
+                      itemBuilder: (_, i) {
+                        final isActive = i == _currentIndex;
+                        final isAnswered = _isAnswered(i);
+                        return GestureDetector(
+                          onTap: () => _pageController.animateToPage(
+                            i,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
                           ),
-                        ),
-                      );
-                    },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            margin: const EdgeInsets.symmetric(
+                              horizontal: 3,
+                              vertical: 10,
+                            ),
+                            width: isActive ? 20 : 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: isActive
+                                  ? Theme.of(context).colorScheme.primary
+                                  : isAnswered
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withValues(alpha: 0.4)
+                                  : Theme.of(context).colorScheme.outline
+                                        .withValues(alpha: 0.3),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 4),
+                GestureDetector(
+                  onTap: _showQuestionOverview,
+                  child: Icon(
+                    Icons.more_horiz_rounded,
+                    color: Theme.of(context).colorScheme.outline,
+                    size: 20,
                   ),
                 ),
               ],
@@ -196,7 +258,7 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
                 question: widget.exam.questionModels[i],
                 response: _responses[i],
                 questionNumber: i + 1,
-                onUpdate: () => setState(() {}),
+                onUpdate: (updated) => _updateResponse(i, updated),
               ),
             ),
           ),
@@ -204,15 +266,6 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
         ],
       ),
     );
-  }
-
-  bool _isAnswered(int i) {
-    final q = widget.exam.questionModels[i];
-    final r = _responses[i];
-    if (q.type == QuestionType.multipleChoice) {
-      return r.selectedOptionIndexes.isNotEmpty;
-    }
-    return r.textAnswer.trim().isNotEmpty;
   }
 
   Widget _buildBottomBar(int total) {
@@ -273,11 +326,238 @@ class _ExamAttemptPageState extends State<ExamAttemptPage> {
   }
 }
 
+// ─── Question Overview Bottom Sheet ──────────────────────────────────────────
+
+class _QuestionOverviewSheet extends StatelessWidget {
+  final List<QuestionModel> questions;
+  final int currentIndex;
+  final bool Function(int) isAnswered;
+  final void Function(int) onNavigate;
+
+  // responses param removed — isAnswered callback already covers this
+  const _QuestionOverviewSheet({
+    required this.questions,
+    required this.currentIndex,
+    required this.isAnswered,
+    required this.onNavigate,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final total = questions.length;
+    final answeredCount = List.generate(
+      total,
+      (i) => i,
+    ).where(isAnswered).length;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.4,
+      maxChildSize: 0.92,
+      builder: (_, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 12, bottom: 4),
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.outline.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
+                child: Row(
+                  children: [
+                    Text(
+                      "All Questions",
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const Spacer(),
+                    _LegendDot(
+                      color: Theme.of(context).colorScheme.primary,
+                      label: "$answeredCount answered",
+                    ),
+                    const SizedBox(width: 12),
+                    _LegendDot(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withValues(alpha: 0.5),
+                      label: "${total - answeredCount} left",
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(height: 16),
+              Expanded(
+                child: GridView.builder(
+                  controller: scrollController,
+                  padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 5,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: total,
+                  itemBuilder: (_, i) {
+                    final answered = isAnswered(i);
+                    final isCurrent = i == currentIndex;
+                    final q = questions[i];
+
+                    final Color bgColor;
+                    final Color borderColor;
+                    final Color textColor;
+
+                    if (isCurrent) {
+                      bgColor = Theme.of(context).colorScheme.primary;
+                      borderColor = Theme.of(context).colorScheme.primary;
+                      textColor = Theme.of(context).colorScheme.onPrimary;
+                    } else if (answered) {
+                      bgColor = Theme.of(
+                        context,
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.6);
+                      borderColor = Theme.of(context).colorScheme.primary;
+                      textColor = Theme.of(context).colorScheme.primary;
+                    } else {
+                      bgColor = Colors.transparent;
+                      borderColor = Theme.of(
+                        context,
+                      ).colorScheme.outline.withValues(alpha: 0.4);
+                      textColor = Theme.of(context).colorScheme.onSurface;
+                    }
+
+                    return Tooltip(
+                      message: q.title.isNotEmpty
+                          ? q.title
+                          : "Question ${i + 1}",
+                      child: GestureDetector(
+                        onTap: () => onNavigate(i),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          decoration: BoxDecoration(
+                            color: bgColor,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: borderColor,
+                              width: isCurrent ? 2 : 1.2,
+                            ),
+                          ),
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Text(
+                                "${i + 1}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 15,
+                                  color: textColor,
+                                ),
+                              ),
+                              if (q.isRequired && !answered)
+                                Positioned(
+                                  top: 5,
+                                  right: 6,
+                                  child: Container(
+                                    width: 6,
+                                    height: 6,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.redAccent,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                              if (answered && !isCurrent)
+                                Positioned(
+                                  bottom: 4,
+                                  right: 5,
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    size: 12,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.circle, size: 8, color: Colors.redAccent),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Red dot = required & unanswered",
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+  const _LegendDot({required this.color, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ─── Question Attempt Card ────────────────────────────────────────────────────
+
 class QuestionAttemptCard extends StatelessWidget {
   final QuestionModel question;
-  final StudentResponse response;
+  final QuestionResponse response;
   final int questionNumber;
-  final VoidCallback onUpdate;
+  final void Function(QuestionResponse updated) onUpdate;
 
   const QuestionAttemptCard({
     super.key,
@@ -361,9 +641,7 @@ class QuestionAttemptCard extends StatelessWidget {
                   ),
                 ),
               ],
-
               const SizedBox(height: 20),
-
               if (question.type == QuestionType.multipleChoice)
                 _MCQAnswerWidget(
                   question: question,
@@ -384,10 +662,12 @@ class QuestionAttemptCard extends StatelessWidget {
   }
 }
 
+// ─── MCQ Widget ───────────────────────────────────────────────────────────────
+
 class _MCQAnswerWidget extends StatefulWidget {
   final QuestionModel question;
-  final StudentResponse response;
-  final VoidCallback onUpdate;
+  final QuestionResponse response;
+  final void Function(QuestionResponse) onUpdate;
 
   const _MCQAnswerWidget({
     required this.question,
@@ -400,17 +680,43 @@ class _MCQAnswerWidget extends StatefulWidget {
 }
 
 class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
+  late QuestionResponse _response;
+
+  @override
+  void initState() {
+    super.initState();
+    _response = widget.response;
+  }
+
+  // Fix: sync local state when the parent pushes a new response object
+  // (e.g. after navigating away and back via the overview sheet).
+  @override
+  void didUpdateWidget(_MCQAnswerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.response != oldWidget.response) {
+      _response = widget.response;
+    }
+  }
+
+  bool get _isMultiSelect => widget.question.correctOptionIndexes.length > 1;
+
+  void _onTap(int i) {
+    setState(() {
+      _response = _isMultiSelect
+          ? _response.toggleOption(i)
+          : _response.selectSingleOption(i);
+    });
+    widget.onUpdate(_response);
+  }
+
   @override
   Widget build(BuildContext context) {
     final options = widget.question.options;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          widget.question.correctOptionIndexes.length > 1
-              ? "Select all that apply"
-              : "Select one option",
+          _isMultiSelect ? "Select all that apply" : "Select one option",
           style: TextStyle(
             fontSize: 13,
             color: Theme.of(context).colorScheme.secondary,
@@ -418,25 +724,9 @@ class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
         ),
         const SizedBox(height: 10),
         ...List.generate(options.length, (i) {
-          final text = options[i];
-          final isSelected = widget.response.selectedOptionIndexes.contains(i);
+          final isSelected = _response.isOptionSelected(i);
           return GestureDetector(
-            onTap: () {
-              setState(() {
-                if (widget.question.correctOptionIndexes.length > 1) {
-                  if (isSelected) {
-                    widget.response.selectedOptionIndexes.remove(i);
-                  } else {
-                    widget.response.selectedOptionIndexes.add(i);
-                  }
-                } else {
-                  widget.response.selectedOptionIndexes
-                    ..clear()
-                    ..add(i);
-                }
-              });
-              widget.onUpdate();
-            },
+            onTap: () => _onTap(i),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               margin: const EdgeInsets.only(bottom: 10),
@@ -446,13 +736,13 @@ class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
                 border: Border.all(
                   color: isSelected
                       ? Theme.of(context).colorScheme.primary
-                      : Colors.grey.withOpacity(0.4),
+                      : Colors.grey.withValues(alpha: 0.4),
                   width: isSelected ? 2 : 1.2,
                 ),
                 color: isSelected
                     ? Theme.of(
                         context,
-                      ).colorScheme.primaryContainer.withOpacity(0.35)
+                      ).colorScheme.primaryContainer.withValues(alpha: 0.35)
                     : Colors.transparent,
               ),
               child: Row(
@@ -462,11 +752,10 @@ class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
                     width: 22,
                     height: 22,
                     decoration: BoxDecoration(
-                      shape: widget.question.correctOptionIndexes.length > 1
+                      shape: _isMultiSelect
                           ? BoxShape.rectangle
                           : BoxShape.circle,
-                      borderRadius:
-                          widget.question.correctOptionIndexes.length > 1
+                      borderRadius: _isMultiSelect
                           ? BorderRadius.circular(5)
                           : null,
                       color: isSelected
@@ -486,7 +775,7 @@ class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      text.isEmpty ? "Option ${i + 1}" : text,
+                      options[i].isEmpty ? "Option ${i + 1}" : options[i],
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: isSelected
@@ -505,10 +794,12 @@ class _MCQAnswerWidgetState extends State<_MCQAnswerWidget> {
   }
 }
 
+// ─── Text Answer Widget ───────────────────────────────────────────────────────
+
 class _TextAnswerWidget extends StatefulWidget {
   final QuestionModel question;
-  final StudentResponse response;
-  final VoidCallback onUpdate;
+  final QuestionResponse response;
+  final void Function(QuestionResponse) onUpdate;
 
   const _TextAnswerWidget({
     required this.question,
@@ -526,7 +817,18 @@ class _TextAnswerWidgetState extends State<_TextAnswerWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.response.textAnswer);
+    _controller = TextEditingController(text: widget.response.writtenAnswer);
+  }
+
+  // Fix: if the parent pushes a response whose text differs from the
+  // controller (e.g. after programmatic navigation), sync the controller.
+  // Guard with a text comparison to avoid moving the cursor while the user types.
+  @override
+  void didUpdateWidget(_TextAnswerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.response.writtenAnswer != _controller.text) {
+      _controller.text = widget.response.writtenAnswer;
+    }
   }
 
   @override
@@ -538,15 +840,11 @@ class _TextAnswerWidgetState extends State<_TextAnswerWidget> {
   @override
   Widget build(BuildContext context) {
     final isLong = widget.question.type == QuestionType.longAnswer;
-
     return TextField(
       controller: _controller,
       maxLines: isLong ? 6 : 2,
       minLines: isLong ? 4 : 1,
-      onChanged: (v) {
-        widget.response.textAnswer = v;
-        widget.onUpdate();
-      },
+      onChanged: (v) => widget.onUpdate(widget.response.updateWrittenAnswer(v)),
       decoration: InputDecoration(
         hintText: isLong ? "Write your answer here..." : "Enter your answer",
         enabledBorder: OutlineInputBorder(
@@ -564,7 +862,7 @@ class _TextAnswerWidgetState extends State<_TextAnswerWidget> {
 
 class MarksChip extends StatelessWidget {
   final int marks;
-  const MarksChip({required this.marks});
+  const MarksChip({required this.marks, super.key});
 
   @override
   Widget build(BuildContext context) {

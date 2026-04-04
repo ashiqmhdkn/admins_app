@@ -8,9 +8,9 @@ import 'package:learning_admin_app/pages/videoNotesExam/Quiz/question_typesheet.
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/text_question_editor_sheet.dart';
 import 'package:learning_admin_app/utils/app_snackbar.dart';
 import 'package:learning_admin_app/utils/image_cropper.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_appbar.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_text_box.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 
 class QuizCreation extends StatefulWidget {
   final String unitId;
@@ -92,6 +92,7 @@ class _QuizCreationState extends State<QuizCreation> {
                   if (type == null) return;
 
                   final newQuestion = QuestionModel(
+                    questionId: "1",
                     type: type,
                     options: type == QuestionType.multipleChoice ? [''] : [],
                     correctOptionIndexes: [],
@@ -146,6 +147,7 @@ class _QuizCreationState extends State<QuizCreation> {
   }
   Exam _buildExam() {
   return Exam(
+    examId: "3",
     title: _titleController.text.trim(),
     description: _descriptionController.text.trim(),
     unitId: widget.unitId,

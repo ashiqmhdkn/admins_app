@@ -1,17 +1,19 @@
 enum QuestionType { shortAnswer, longAnswer, multipleChoice }
 
 class QuestionModel {
+   String questionId;
    QuestionType type;
-  String title;
+   String title;
    String? imagePath;
-  String description;
-   String answer;
-   int marks;
- bool isRequired;
+   String description;
+ String answer;
+ int marks;
+   bool isRequired;
   List<String> options;
    List<int> correctOptionIndexes;
 
   QuestionModel({
+    required this.questionId,
     required this.type,
     this.imagePath,
     this.title = '',
@@ -21,40 +23,43 @@ class QuestionModel {
     this.isRequired = false,
     List<String>? options,
     List<int>? correctOptionIndexes,
-  })  : options = options ?? [],
-        correctOptionIndexes = correctOptionIndexes ?? [];
+  }) : options = options ?? [],
+       correctOptionIndexes = correctOptionIndexes ?? [];
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
-      type: QuestionType.values.firstWhere(
-        (e) => e.toString().split('.').last == json['type'],
-      ),
-      title: json['title'] ?? '',
-      imagePath: json['imagePath'],
-      description: json['description'] ?? '',
-      answer: json['answer'] ?? '',
-      marks: json['marks'] ?? 1,
-      isRequired: json['isRequired'] ?? false,
+      questionId: json['question_id'] as String,
+      type: QuestionType.values.firstWhere((e) => e.name == json['type']),
+      title: json['title'] as String? ?? '',
+      imagePath: json['image_path'] as String?,
+      description: json['description'] as String? ?? '',
+      answer: json['answer'] as String? ?? '',
+      marks: json['marks'] as int? ?? 1,
+      isRequired: json['is_required'] as bool? ?? false,
       options: List<String>.from(json['options'] ?? []),
-      correctOptionIndexes: List<int>.from(json['correctOptionIndexes'] ?? []),
+      correctOptionIndexes: List<int>.from(
+        json['correct_option_indexes'] ?? [],
+      ),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'type': type.toString().split('.').last,
+      'question_id': questionId,
+      'type': type.name,
       'title': title,
-      'imagePath': imagePath,
+      'image_path': imagePath,
       'description': description,
       'answer': answer,
       'marks': marks,
-      'isRequired': isRequired,
+      'is_required': isRequired,
       'options': options,
-      'correctOptionIndexes': correctOptionIndexes,
+      'correct_option_indexes': correctOptionIndexes,
     };
   }
 
   QuestionModel copyWith({
+    String? questionId,
     QuestionType? type,
     String? title,
     String? imagePath,
@@ -66,6 +71,7 @@ class QuestionModel {
     List<int>? correctOptionIndexes,
   }) {
     return QuestionModel(
+      questionId: questionId ?? this.questionId,
       type: type ?? this.type,
       title: title ?? this.title,
       imagePath: imagePath ?? this.imagePath,

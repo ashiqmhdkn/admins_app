@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/question_model.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
 
 class TextQuestionEditorSheet extends StatelessWidget {
   final QuestionModel question;

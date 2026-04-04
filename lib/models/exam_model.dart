@@ -1,34 +1,38 @@
 import 'package:learning_admin_app/models/question_model.dart';
 
 class Exam {
-  final String title;
-  final String? description;
-  final String unitId;
-  final String subjectId;
-  final List<QuestionModel> questionModels;
-
+  String examId;
+   String title;
+  String? description;
+ String unitId;
+   String subjectId;
+   List<QuestionModel> questionModels;
+ 
   Exam({
+    required this.examId,
     required this.title,
     required this.questionModels,
     required this.unitId,
     required this.subjectId,
     this.description,
   });
-
+ 
   factory Exam.fromJson(Map<String, dynamic> json) {
     return Exam(
-      subjectId: json['subject_id'],
-      title: json['title'],
-      unitId: json['unit_id'],
+      examId: json['exam_id'] as String,
+      subjectId: json['subject_id'] as String,
+      title: json['title'] as String,
+      unitId: json['unit_id'] as String,
       questionModels: (json['questions'] as List)
-          .map((q) => QuestionModel.fromJson(q))
+          .map((q) => QuestionModel.fromJson(q as Map<String, dynamic>))
           .toList(),
-      description: json['description'],
+      description: json['description'] as String?,
     );
   }
-
+ 
   Map<String, dynamic> toJson() {
     return {
+      'exam_id': examId,
       'title': title,
       'subject_id': subjectId,
       'unit_id': unitId,
@@ -36,8 +40,9 @@ class Exam {
       'description': description,
     };
   }
-
+ 
   Exam copyWith({
+    String? examId,
     String? title,
     String? description,
     String? unitId,
@@ -45,6 +50,7 @@ class Exam {
     List<QuestionModel>? questionModels,
   }) {
     return Exam(
+      examId: examId ?? this.examId,
       title: title ?? this.title,
       description: description ?? this.description,
       unitId: unitId ?? this.unitId,

@@ -6,8 +6,8 @@ import 'package:learning_admin_app/api/profile_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/user_model.dart';
 import 'package:learning_admin_app/pages/login/otp_sheet.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_text_box.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginPage extends ConsumerStatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:better_player/better_player.dart';
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/comment_model.dart';
-import 'package:learning_admin_app/widgets/Sheet/comment_sheet.dart';
+import 'package:learning_admin_app/pages/widgets/Sheet/comment_sheet.dart';
 
 class Videoplayback extends StatefulWidget {
   final String url;

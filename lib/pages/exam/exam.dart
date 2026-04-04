@@ -3,7 +3,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_attend_page.dart';
-import 'package:learning_admin_app/widgets/Cards/exam_card.dart';
+import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_summary_page.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/exam_card.dart';
 
 class StudentExams extends StatelessWidget {
   final String unitId;
@@ -30,7 +31,7 @@ class StudentExams extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ExamAttemptPage(exam: _buildExam()),
+                            builder: (_) => ExamAttemptPage(exam: _buildExam(),studentId: "",),
                           ),
                         );
                       },
@@ -50,6 +51,7 @@ class StudentExams extends StatelessWidget {
 
 Exam _buildExam() {
   return Exam(
+    examId: "1",
     title: "Reverend Insanity — Fang Yuan Arc",
     description: "Test your knowledge of the demon Gu Master's journey.",
     unitId: " unitId",
@@ -62,6 +64,7 @@ List<QuestionModel> getReverendInsanityQuestions() {
   return [
     // 1. Short Answer
     QuestionModel(
+      questionId: "1",
       type: QuestionType.shortAnswer,
       title: "What is Fang Yuan's primary goal throughout Reverend Insanity?",
       description: "State his ultimate ambition in a few words.",
@@ -71,6 +74,7 @@ List<QuestionModel> getReverendInsanityQuestions() {
 
     // 2. Multiple Choice (single correct)
     QuestionModel(
+      questionId: "2",
       type: QuestionType.multipleChoice,
       title:
           "Which Gu does Fang Yuan obtain at the beginning of the story that sets him apart?",
@@ -88,6 +92,7 @@ List<QuestionModel> getReverendInsanityQuestions() {
 
     // 3. Multiple Choice (multi correct)
     QuestionModel(
+      questionId: "3",
       type: QuestionType.multipleChoice,
       title:
           "Which of the following accurately describe Fang Yuan's personality?",
@@ -105,6 +110,7 @@ List<QuestionModel> getReverendInsanityQuestions() {
 
     // 4. Long Answer
     QuestionModel(
+      questionId: "4",
       type: QuestionType.longAnswer,
       title:
           "Explain how Fang Yuan uses his 500 years of future knowledge after rebirth.",
@@ -113,79 +119,5 @@ List<QuestionModel> getReverendInsanityQuestions() {
       isRequired: false,
     ),
 
-    // 5. Short Answer
-    QuestionModel(
-      type: QuestionType.shortAnswer,
-      title: "What rank is the Spring Autumn Cicada at the start of the novel?",
-      description: "Enter the rank number.",
-      marks: 2,
-      isRequired: true,
-    ),
-
-    // 6. Multiple Choice (single correct)
-    QuestionModel(
-      type: QuestionType.multipleChoice,
-      title:
-          "What is the name of the village clan Fang Yuan belongs to at the start?",
-      marks: 2,
-      isRequired: true,
-      options: ["Gu Yue Clan", "Bai Clan", "Qing Mao Mountain", "Lang Ya Sect"],
-      correctOptionIndexes: [0],
-    ),
-
-    // 7. Multiple Choice (single correct)
-    QuestionModel(
-      type: QuestionType.multipleChoice,
-      title:
-          "Which aptitude does Fang Yuan possess, considered the worst in the clan?",
-      description: "This makes others underestimate him early on.",
-      marks: 3,
-      isRequired: true,
-      options: [
-        "Rank A Wood Aptitude",
-        "Rank C Fire Aptitude",
-        "Rank E Gray Bone Aptitude",
-        "Zero Aptitude",
-      ],
-      correctOptionIndexes: [2],
-    ),
-
-    // 8. Long Answer
-    QuestionModel(
-      type: QuestionType.longAnswer,
-      title:
-          "Discuss the philosophical theme of 'a person's true self' as portrayed through Fang Yuan's character.",
-      description:
-          "The author Gu Zhen Ren uses Fang Yuan to challenge conventional morality. Elaborate.",
-      marks: 8,
-      isRequired: false,
-    ),
-
-    // 9. Short Answer
-    QuestionModel(
-      type: QuestionType.shortAnswer,
-      title:
-          "What is the name of the immortal Fang Yuan eventually becomes known as in the later arcs?",
-      description: "His alias/title, not his birth name.",
-      marks: 3,
-      isRequired: false,
-    ),
-
-    // 10. Multiple Choice (multi correct)
-    QuestionModel(
-      type: QuestionType.multipleChoice,
-      title:
-          "Which of the following methods does Fang Yuan use to accumulate strength in the early chapters?",
-      description: "Select all correct strategies.",
-      marks: 4,
-      isRequired: true,
-      options: [
-        "Secretly cultivating the Spring Autumn Cicada",
-        "Manipulating clan competitions for resources",
-        "Forming sincere brotherly bonds",
-        "Using future knowledge to exploit opportunities",
-      ],
-      correctOptionIndexes: [0, 1, 3],
-    ),
   ];
 }

@@ -4,9 +4,10 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/pages/Subjects/add_subject.dart';
 import 'package:learning_admin_app/pages/Subjects/edit_subject.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/subject_card.dart';
 import 'package:learning_admin_app/provider/subjects_provider.dart';
-import 'package:learning_admin_app/widgets/Cards/course_card.dart';
-import 'package:learning_admin_app/widgets/admin_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/course_card.dart';
+import 'package:learning_admin_app/pages/widgets/admin_appbar.dart';
 
 class AdminSubjects extends ConsumerStatefulWidget {
   final String courseid;
@@ -64,8 +65,8 @@ class _AdminSubjectsState extends ConsumerState<AdminSubjects> {
                   child: SlideAnimation(
                     duration: const Duration(milliseconds: 400),
                     child: FadeInAnimation(
-                      child: CourseCard(
-                        onDelete: () async { 
+                      child: SubjectCard(
+                        onDelete: () async {
                           final confirm = await showModalBottomSheet<bool>(
                             context: context,
                             shape: const RoundedRectangleBorder(
@@ -100,7 +101,6 @@ class _AdminSubjectsState extends ConsumerState<AdminSubjects> {
                                             onPressed: () =>
                                                 Navigator.pop(context, false),
                                             child: const Text("Cancel"),
-                                            
                                           ),
                                         ),
 
@@ -159,7 +159,7 @@ class _AdminSubjectsState extends ConsumerState<AdminSubjects> {
           );
         },
         loading: () => const Center(child: const CircularProgressIndicator()),
-        error: (error, stack) => Center(child:  Text('Error: $error')),
+        error: (error, stack) => Center(child: Text('Error: $error')),
       ),
     );
   }

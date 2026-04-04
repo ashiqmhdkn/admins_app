@@ -8,7 +8,7 @@ import 'package:learning_admin_app/pages/Batch/edit_batch.dart';
 import 'package:learning_admin_app/provider/batch_provider.dart';
 import 'package:learning_admin_app/provider/request_provider.dart';
 import 'package:learning_admin_app/utils/app_snackbar.dart';
-import 'package:learning_admin_app/widgets/Cards/edit_batch_card.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/edit_batch_card.dart';
 
 class Adminbatch extends ConsumerStatefulWidget {
   final String courseId;

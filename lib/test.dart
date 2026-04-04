@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/pages/Courses/add_course_info.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
 
 class Test extends StatelessWidget {
   const Test({super.key});
@@ -12,13 +12,13 @@ class Test extends StatelessWidget {
         child: Custombuttonone(
           text: "Test Page ",
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (ctx) {
-                  return AddCoursePage();
-                },
-              ),
-            );
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (ctx) {
+            //       return AddCoursePage(course: ,);
+            //     },
+            //   ),
+            // );
           },
         ),
       ),

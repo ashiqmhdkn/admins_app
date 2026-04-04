@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
 import 'package:learning_admin_app/pages/Batch/widget/teacherrequest.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_appbar.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 
 class TeachersPage extends StatelessWidget {

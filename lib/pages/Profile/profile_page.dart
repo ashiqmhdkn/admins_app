@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/api/profile_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/user_model.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_primary_text.dart';
-import 'package:learning_admin_app/widgets/dark_or_light.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_primary_text.dart';
+import 'package:learning_admin_app/pages/widgets/dark_or_light.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profilepage extends ConsumerWidget {

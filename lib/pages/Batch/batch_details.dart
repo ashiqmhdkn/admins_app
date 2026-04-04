@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
 import 'package:learning_admin_app/pages/Batch/widget/subject_list.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_primary_text.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_primary_text.dart';
 
 class BatchDetails extends StatefulWidget {
   final String courseId;

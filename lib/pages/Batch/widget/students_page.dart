@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_admin_app/models/batch_model.dart';
 import 'package:learning_admin_app/pages/Batch/widget/studentinbatch.dart';
 import 'package:learning_admin_app/pages/Batch/widget/studentrequest.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_appbar.dart';
 
 class StudentsPage extends StatelessWidget {
   final Batch batch;

@@ -6,7 +6,7 @@ class CourseCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
-
+  final VoidCallback infoFilling;
   const CourseCard({
     super.key,
     required this.title,
@@ -14,6 +14,7 @@ class CourseCard extends StatelessWidget {
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
+    required this.infoFilling,
   });
 
   @override
@@ -31,6 +32,25 @@ class CourseCard extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Image.network(backGroundImage, fit: BoxFit.cover),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.tertiary,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildActionButton(
+                          icon: Icons.edit_document,
+                          onTap: infoFilling,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
                 Positioned(
                   top: 0,
                   right: 0,

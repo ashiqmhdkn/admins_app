@@ -7,7 +7,7 @@ import 'package:learning_admin_app/pages/Units/add_unit.dart';
 import 'package:learning_admin_app/pages/Units/edit_unit.dart';
 import 'package:learning_admin_app/pages/exam/exam.dart';
 import 'package:learning_admin_app/provider/unit_provider.dart';
-import 'package:learning_admin_app/widgets/Cards/unit_card.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/unit_card.dart';
 
 class AdminUnits extends ConsumerStatefulWidget {
   final String subjectId;

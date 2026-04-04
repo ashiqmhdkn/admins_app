@@ -279,7 +279,6 @@ class _EditCourseState extends ConsumerState<EditCourse> {
       return;
     }
 
-    // Check if at least we have an image (either existing or new)
     if (!_keepExistingImage && newCourseImage == null) {
       AppSnackBar.show(
         context,

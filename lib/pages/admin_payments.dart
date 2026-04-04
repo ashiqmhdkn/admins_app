@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/models/payments_model.dart';
-import 'package:learning_admin_app/widgets/Cards/payment_info_card.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/payment_info_card.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_appbar.dart';
 
 class AdminPayments extends StatelessWidget {
   const AdminPayments({super.key});

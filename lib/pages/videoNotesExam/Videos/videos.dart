@@ -4,7 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Videos/video_playback.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Videos/video_update.dart';
 import 'package:learning_admin_app/provider/video_provider.dart';
-import 'package:learning_admin_app/widgets/Cards/video_selection_card.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/video_selection_card.dart';
 
 class AdminSubjectVideos extends ConsumerStatefulWidget {
   final String unitName;

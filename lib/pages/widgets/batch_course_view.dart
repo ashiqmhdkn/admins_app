@@ -4,7 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/models/course_model.dart';
 import 'package:learning_admin_app/pages/Batch/admin_batch.dart';
 import 'package:learning_admin_app/provider/course_provider.dart';
-import 'package:learning_admin_app/widgets/Cards/course_card1.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/course_card1.dart';
 
 class BatchCourseview extends ConsumerStatefulWidget {
   const BatchCourseview({super.key});

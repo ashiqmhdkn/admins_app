@@ -4,7 +4,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Notes/update_note.dart';
 import 'package:learning_admin_app/provider/notes_provider.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Notes/securePdfViewer.dart';
-import 'package:learning_admin_app/widgets/Cards/notes_card.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/notes_card.dart';
 
 class AdminSubjectNotes extends ConsumerStatefulWidget {
   final String unitName;

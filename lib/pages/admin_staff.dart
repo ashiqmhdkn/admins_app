@@ -1,7 +1,7 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:learning_admin_app/widgets/staff_list.dart';
+import 'package:learning_admin_app/pages/widgets/staff_list.dart';
 
 class AdminStaff extends StatefulWidget {
   const AdminStaff({super.key});

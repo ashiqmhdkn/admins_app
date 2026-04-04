@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/models/staff_model.dart';
-import 'package:learning_admin_app/widgets/Cards/staff_info_card.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/staff_info_card.dart';
 
 class AdminStaffList extends StatelessWidget {
   final String role;

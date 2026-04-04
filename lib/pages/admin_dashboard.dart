@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_appbar.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
-import 'package:learning_admin_app/widgets/batch_course_view.dart';
-import 'package:learning_admin_app/widgets/payments_count_container.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_bold_text.dart';
+import 'package:learning_admin_app/pages/widgets/batch_course_view.dart';
+import 'package:learning_admin_app/pages/widgets/payments_count_container.dart';
 
 class AdminDashboard extends ConsumerWidget {
   const AdminDashboard({super.key});

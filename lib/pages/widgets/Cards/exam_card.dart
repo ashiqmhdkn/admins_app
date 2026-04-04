@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_bold_text.dart';
 
 class ExamListTile extends StatelessWidget {
   final String title;

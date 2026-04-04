@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/pages/Courses/add_course.dart';
+import 'package:learning_admin_app/pages/Courses/add_course_info.dart';
 import 'package:learning_admin_app/pages/Courses/edit_course.dart';
 import 'package:learning_admin_app/pages/Subjects/admin_subjects.dart';
 import 'package:learning_admin_app/provider/course_provider.dart';
-import 'package:learning_admin_app/widgets/Cards/course_card.dart';
-import 'package:learning_admin_app/widgets/admin_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/course_card.dart';
+import 'package:learning_admin_app/pages/widgets/admin_appbar.dart';
 
 class AdminCourses extends ConsumerWidget {
   const AdminCourses({super.key});
@@ -48,6 +49,15 @@ class AdminCourses extends ConsumerWidget {
                     duration: const Duration(milliseconds: 400),
                     child: FadeInAnimation(
                       child: CourseCard(
+                        infoFilling: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (ctx) {
+                                return AddCoursePage(course: course);
+                              },
+                            ),
+                          );
+                        },
                         onEdit: () {
                           showModalBottomSheet(
                             context: context,

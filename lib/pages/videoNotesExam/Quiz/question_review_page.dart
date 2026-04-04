@@ -4,9 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/provider/exam_provider.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
-import 'package:learning_admin_app/widgets/admin_appbar.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_bold_text.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/admin_appbar.dart';
 
 class QuizReviewPage extends ConsumerStatefulWidget {
   final Exam exam;

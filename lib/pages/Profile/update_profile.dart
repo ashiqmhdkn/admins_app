@@ -9,9 +9,9 @@ import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/user_model.dart';
 import 'package:learning_admin_app/utils/image_cropper.dart';
 import 'package:learning_admin_app/utils/image_preview.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_primary_text.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_text_box.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_primary_text.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 
 class UpdateProfilePage extends ConsumerStatefulWidget {
   final User user;

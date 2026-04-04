@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_text_box.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});

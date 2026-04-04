@@ -1,14 +1,16 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:learning_admin_app/models/course_model.dart';
 import 'package:learning_admin_app/utils/image_cropper.dart';
 import 'package:learning_admin_app/utils/image_preview.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_bold_text.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_primary_text.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_text_box.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_bold_text.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_primary_text.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 
 class AddCoursePage extends StatefulWidget {
-  const AddCoursePage({super.key});
+  final Course course;
+  const AddCoursePage({super.key, required this.course});
 
   @override
   State<AddCoursePage> createState() => _AddCoursePageState();
@@ -20,9 +22,9 @@ class _AddCoursePageState extends State<AddCoursePage> {
   static const int _totalSteps = 5;
 
   final _basicFormKey = GlobalKey<FormState>();
-  final _titleCtrl = TextEditingController();
-  final _subtitleCtrl = TextEditingController();
-  final _bannerCtrl = TextEditingController();
+  late TextEditingController _titleCtrl = TextEditingController();
+  late TextEditingController _subtitleCtrl = TextEditingController();
+  late TextEditingController _bannerCtrl = TextEditingController();
   String _languageTag = 'EN';
   String _categoryTag = 'FULL SYLLABUS BATCH';
 
@@ -44,6 +46,14 @@ class _AddCoursePageState extends State<AddCoursePage> {
   String _currency = 'INR';
   bool _isFree = false;
   bool _isEnrolled = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleCtrl = TextEditingController(text: widget.course.title);
+    _subtitleCtrl = TextEditingController(text: widget.course.description);
+    _bannerCtrl = TextEditingController(text: widget.course.course_image);
+  }
 
   void _animateTo(int step) {
     setState(() => _currentStep = step);
@@ -371,7 +381,8 @@ class _Step1BasicInfo extends StatefulWidget {
 
 class _Step1BasicInfoState extends State<_Step1BasicInfo> {
   final double _aspectRatio = 4 / 3;
-
+  String? newCourseImage;
+  bool _keepExistingImage = true;
   Future<void> _pickFile() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image);
 
@@ -386,7 +397,9 @@ class _Step1BasicInfoState extends State<_Step1BasicInfo> {
 
       if (croppedImagePath != null) {
         setState(() {
+          newCourseImage = croppedImagePath;
           widget.bannerCtrl.text = croppedImagePath;
+          _keepExistingImage = false;
         });
       }
     }
@@ -419,14 +432,7 @@ class _Step1BasicInfoState extends State<_Step1BasicInfo> {
           ),
           const SizedBox(height: 16),
           const _Label('Banner Image '),
-          Center(
-            child: AspectRatioImageField(
-              imagePath: widget.bannerCtrl.text,
-              aspectRatio: _aspectRatio,
-              onPick: _pickFile,
-              onRemove: () => setState(() => widget.bannerCtrl.text = ""),
-            ),
-          ),
+          Center(child: _buildImageWidget()),
           const SizedBox(height: 16),
           Row(
             children: [
@@ -486,6 +492,78 @@ class _Step1BasicInfoState extends State<_Step1BasicInfo> {
       ),
     ),
   );
+  Widget _buildImageWidget() {
+    if (newCourseImage != null && newCourseImage!.isNotEmpty) {
+      return AspectRatioImageField(
+        imagePath: newCourseImage!,
+        aspectRatio: _aspectRatio,
+        onPick: _pickFile,
+        onRemove: () {
+          setState(() {
+            newCourseImage = null;
+          });
+        },
+      );
+    }
+    if (_keepExistingImage && widget.bannerCtrl.text.isNotEmpty) {
+      return Stack(
+        children: [
+          AspectRatio(
+            aspectRatio: _aspectRatio,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                widget.bannerCtrl.text,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (_, __, ___) =>
+                    const Center(child: Icon(Icons.error)),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 8,
+            right: 8,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _keepExistingImage = false;
+                  widget.bannerCtrl.text = "";
+                });
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 20),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+    return GestureDetector(
+      onTap: _pickFile,
+      child: Container(
+        height: 160,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.grey),
+        ),
+        child: const Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.cloud_upload_outlined, size: 40),
+            SizedBox(height: 8),
+            Text("Select Image for the Course"),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _Step2Dates extends StatelessWidget {

@@ -5,8 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/pages/Batch/widget/batch_course_card.dart';
 import 'package:learning_admin_app/pages/Subjects/edit_subject.dart';
 import 'package:learning_admin_app/provider/subjects_provider.dart';
-import 'package:learning_admin_app/widgets/Cards/course_card.dart';
-
 class SubjectList extends ConsumerStatefulWidget {
   final String courseId;
   const SubjectList({super.key, required this.courseId});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learning_admin_app/utils/app_snackbar.dart';
-import 'package:learning_admin_app/widgets/Custom/custom_button_one.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
 
 class OtpBottomSheet extends StatefulWidget {
   final String phone;

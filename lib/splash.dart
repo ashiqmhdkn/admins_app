@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/api/profile_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
+import 'package:learning_admin_app/pages/widgets/Custom/custom_bold_text.dart';
 // your AuthController
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -59,11 +60,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     // set theme according to system
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Center(
-        child: CircleAvatar(
-          radius: 80,
-          backgroundImage: Image.asset('lib/assets/image.png').image,
-        ), // simple splash loader
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: CircleAvatar(
+              radius: 80,
+              backgroundImage: Image.asset('lib/assets/image.png').image,
+            ), // simple splash loader
+          ),
+          SizedBox(height: 10),
+          Customboldtext(
+            text: "A LEGACY OF SUCCESS \n     FOR GENERATIONS",
+            fontValue: 17,
+          ),
+        ],
       ),
     );
   }

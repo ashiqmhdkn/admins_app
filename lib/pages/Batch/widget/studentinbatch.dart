@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/accepted_card.dart';
 import 'package:learning_admin_app/provider/request_provider.dart';
 
 class StudentAccepted extends ConsumerWidget {
@@ -20,15 +21,16 @@ class StudentAccepted extends ConsumerWidget {
         if (students.isEmpty) {
           return const Center(child: Text("No students found"));
         }
-        return ListView.builder(
-          itemCount: students.length,
-          itemBuilder: (context, index) {
-            final student = students[index];
-            return ListTile(
-              title: Text(student.name ?? "Unnamed"),
-              subtitle: Text("ID: ${student.email}"),
-            );
-          },
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ListView.separated(
+            itemCount: students.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (context, index) {
+              final student = students[index];
+              return AcceptedCard(student: student, onDelete: () {});
+            },
+          ),
         );
       },
     );

@@ -7,11 +7,9 @@ import 'package:learning_admin_app/pages/videoNotesExam/Notes/securePdfViewer.da
 import 'package:learning_admin_app/pages/widgets/Cards/notes_card.dart';
 
 class AdminSubjectNotes extends ConsumerStatefulWidget {
-  final String unitName;
   final String unitId;
   const AdminSubjectNotes({
     super.key,
-    required this.unitName,
     required this.unitId,
   });
   ConsumerState<AdminSubjectNotes> createState() => _notesState();

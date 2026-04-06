@@ -1,17 +1,26 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:learning_admin_app/api/otp_api.dart';
+import 'package:crypto/crypto.dart';
+import 'package:learning_admin_app/controller/auth_controller.dart';
+import 'package:learning_admin_app/models/user_model.dart';
 import 'package:learning_admin_app/utils/app_snackbar.dart';
 import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
 
-class OtpBottomSheet extends StatefulWidget {
-  final String phone;
+class OtpBottomSheet extends ConsumerStatefulWidget {
+  final User user;
+  final String password;
 
-  const OtpBottomSheet({super.key, required this.phone});
+  const OtpBottomSheet({super.key,required this.password, required this.user});
 
   @override
-  State<OtpBottomSheet> createState() => _OtpBottomSheetState();
+  ConsumerState<OtpBottomSheet> createState() => _OtpBottomSheetState();
 }
 
-class _OtpBottomSheetState extends State<OtpBottomSheet> {
+class _OtpBottomSheetState extends ConsumerState<OtpBottomSheet> {
   final List<TextEditingController> controllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -27,6 +36,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
     if (value.isNotEmpty && index < 5) {
       focusNodes[index + 1].requestFocus();
     } else if (value.isEmpty && index > 0) {
+      sendOtp(widget.user.email);
       focusNodes[index - 1].requestFocus();
     }
     setState(() {});
@@ -72,7 +82,7 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
             const SizedBox(height: 5),
 
             Text(
-              widget.phone,
+              widget.user.email,
               style: const TextStyle(
                 decoration: TextDecoration.underline,
                 fontWeight: FontWeight.w500,
@@ -123,14 +133,39 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
             Custombuttonone(
               text: "Continue",
               onTap: isFilled
-                  ? () {
+                  ? () async{
                       final otp = getOtp();
+                     final bool confirm =await verifyOtp(email: widget.user.email, otp: otp);
+                      if(confirm){
+                        AppSnackBar.show(context, message:"OTP is correct",type: SnackType.success);
+                        try {
+                    final hashedPassword = hashPasswordWithSalt(
+                      widget.password,
+                      "y6SsdIR",
+                    );
 
-                      Navigator.pop(context);
+                    await ref
+                        .read(authControllerProvider.notifier)
+                        .register(
+                          email: widget.user.email,
+                          name: widget.user.username,
+                          role: widget.user.role,
+                          password: hashedPassword,
+                        );
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("OTP Entered: $otp")),
-                      );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Registration successful')),
+                    );
+
+                    GoRouter.of(context).go('/login');
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Registration failed: $e')),
+                    );
+                  }
+                      }else{
+                        AppSnackBar.show(context, message: "Incorrect OTP",type: SnackType.error);
+                      }
                     }
                   : null,
             ),
@@ -140,5 +175,11 @@ class _OtpBottomSheetState extends State<OtpBottomSheet> {
         ),
       ),
     );
+  }
+    String hashPasswordWithSalt(String password, String salt) {
+    final combined = password + salt;
+    final bytes = utf8.encode(combined);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 }

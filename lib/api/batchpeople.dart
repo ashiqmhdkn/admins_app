@@ -36,3 +36,37 @@ Future<List<User>> getBatchStudents({
     return [];
   }
 }
+Future<bool> studentDelete({
+  required String token,
+  required String BatchId,
+  required String studentId,
+}) async {
+
+  final uri = Uri.parse('$baseUrl/units');
+
+  print("DELETE URL: $uri");
+  print('batchid :$BatchId');
+  print("Student ID: $studentId");
+  print("TOKEN: $token");
+
+  try {
+    final res = await http.delete(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: '{"batch_id":"$BatchId","student_id":"$studentId"}',
+    );
+
+    print("DELETE Status: ${res.statusCode}");
+    print("DELETE Body: ${res.body}");
+
+    return res.statusCode == 200;
+
+  } catch (e) {
+    print('Error: $e');
+    return false;
+  }
+}

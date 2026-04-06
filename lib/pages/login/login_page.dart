@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/api/profile_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/user_model.dart';
-import 'package:learning_admin_app/pages/login/otp_sheet.dart';
 import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
 import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,7 +48,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               const SizedBox(height: 30),
 
               Customtextbox(
-                hinttext: 'Phone number',
+                hinttext: 'E-mail address',
                 textController: _phoneNumberController,
                 textFieldIcon: Icons.phone,
               ),
@@ -151,18 +150,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
               const SizedBox(height: 10),
 
-              Custombuttonone(
-                text: 'Otp test',
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder: (_) =>
-                        OtpBottomSheet(phone: _phoneNumberController.text),
-                  );
-                },
-              ),
+              // Custombuttonone(
+              //   text: 'Otp test',
+              //   onTap: () {
+              //     showModalBottomSheet(
+              //       context: context,
+              //       isScrollControlled: true,
+              //       backgroundColor: Colors.transparent,
+              //       builder: (_) =>
+              //           OtpBottomSheet(phone: _phoneNumberController.text),
+              //     );
+              //   },
+              // ),
             ],
           ),
         ),

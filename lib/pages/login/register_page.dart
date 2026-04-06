@@ -3,7 +3,10 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:learning_admin_app/api/otp_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
+import 'package:learning_admin_app/models/user_model.dart';
+import 'package:learning_admin_app/pages/login/otp_sheet.dart';
 import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
 import 'package:learning_admin_app/pages/widgets/Custom/custom_text_box.dart';
 
@@ -166,7 +169,7 @@ class _RegisterState extends ConsumerState<RegisterPage> {
               const SizedBox(height: 20),
 
               Custombuttonone(
-                text: 'Sign Up',
+                text: 'OTP',
                 onTap: () async {
                   if (_phoneNumberController.text.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -194,31 +197,39 @@ class _RegisterState extends ConsumerState<RegisterPage> {
                     );
                     return;
                   }
+                  sendOtp(_phoneNumberController.text);
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) =>
+                        OtpBottomSheet(user: User(username: _namecontroller.text, email: _phoneNumberController.text, phone: 0, role:_selectedRole!),password:_passwordcontroller.text),
+                  );
+                  // try {
+                  //   final hashedPassword = hashPasswordWithSalt(
+                  //     _passwordcontroller.text,
+                  //     "y6SsdIR",
+                  //   );
 
-                  try {
-                    final hashedPassword = hashPasswordWithSalt(
-                      _passwordcontroller.text,
-                      "y6SsdIR",
-                    );
-                    await ref
-                        .read(authControllerProvider.notifier)
-                        .register(
-                          email: _phoneNumberController.text,
-                          name: _namecontroller.text,
-                          role: _selectedRole!,
-                          password: hashedPassword,
-                        );
+                  //   await ref
+                  //       .read(authControllerProvider.notifier)
+                  //       .register(
+                  //         email: _phoneNumberController.text,
+                  //         name: _namecontroller.text,
+                  //         role: _selectedRole!,
+                  //         password: hashedPassword,
+                  //       );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Registration successful')),
-                    );
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('Registration successful')),
+                  //   );
 
-                    GoRouter.of(context).go('/login');
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Registration failed: $e')),
-                    );
-                  }
+                  //   GoRouter.of(context).go('/login');
+                  // } catch (e) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     SnackBar(content: Text('Registration failed: $e')),
+                  //   );
+                  // }
                 },
               ),
             ],

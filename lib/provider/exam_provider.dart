@@ -20,6 +20,7 @@ class CreateExamNotifier extends AsyncNotifier<String?> {
   }
 }
 
+
 final createExamProvider =
     AsyncNotifierProvider<CreateExamNotifier, String?>(
   () => CreateExamNotifier(),

@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:learning_admin_app/api/otp_api.dart';
-import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/user_model.dart';
 import 'package:learning_admin_app/pages/login/otp_sheet.dart';
 import 'package:learning_admin_app/pages/widgets/Custom/custom_button_one.dart';
@@ -41,7 +39,6 @@ class _RegisterState extends ConsumerState<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authControllerProvider);
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,

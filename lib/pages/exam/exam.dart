@@ -3,7 +3,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_attend_page.dart';
-import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_summary_page.dart';
 import 'package:learning_admin_app/pages/widgets/Cards/exam_card.dart';
 
 class StudentExams extends StatelessWidget {
@@ -27,11 +26,16 @@ class StudentExams extends StatelessWidget {
                   verticalOffset: 50.0,
                   child: FadeInAnimation(
                     child: ExamListTile(
+                      isEnabled: true,
+                      onToggle: (value) {},
                       onStartExam: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => ExamAttemptPage(exam: _buildExam(),studentId: "",),
+                            builder: (_) => ExamAttemptPage(
+                              exam: _buildExam(),
+                              studentId: "",
+                            ),
                           ),
                         );
                       },
@@ -118,6 +122,5 @@ List<QuestionModel> getReverendInsanityQuestions() {
       marks: 5,
       isRequired: false,
     ),
-
   ];
 }

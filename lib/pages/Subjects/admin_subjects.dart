@@ -75,50 +75,54 @@ class _AdminSubjectsState extends ConsumerState<AdminSubjects> {
                               ),
                             ),
                             builder: (context) {
-                              return Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Text(
-                                      "Delete Subject?",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+                              return SafeArea(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                        "Delete Subject?",
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
 
-                                    const SizedBox(height: 10),
+                                      const SizedBox(height: 10),
 
-                                    const Text("This action cannot be undone."),
+                                      const Text(
+                                        "This action cannot be undone.",
+                                      ),
 
-                                    const SizedBox(height: 20),
+                                      const SizedBox(height: 20),
 
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                          child: OutlinedButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context, false),
-                                            child: const Text("Cancel"),
-                                          ),
-                                        ),
-
-                                        const SizedBox(width: 10),
-
-                                        Expanded(
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: OutlinedButton(
+                                              onPressed: () =>
+                                                  Navigator.pop(context, false),
+                                              child: const Text("Cancel"),
                                             ),
-                                            onPressed: () =>
-                                                Navigator.pop(context, true),
-                                            child: const Text("Delete"),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+
+                                          const SizedBox(width: 10),
+
+                                          Expanded(
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.red,
+                                              ),
+                                              onPressed: () =>
+                                                  Navigator.pop(context, true),
+                                              child: const Text("Delete"),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

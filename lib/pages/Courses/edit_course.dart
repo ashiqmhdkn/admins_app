@@ -67,110 +67,112 @@ class _EditCourseState extends ConsumerState<EditCourse> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 16, 8, 2),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Text(
-                "Edit Course",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 6),
-            const Text("Name"),
-            const SizedBox(height: 6),
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(
-                hintText: "Enter Course name",
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(8, 16, 8, 2),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Center(
+                child: Text(
+                  "Edit Course",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            const Text("Description"),
-            const SizedBox(height: 6),
-            TextField(
-              controller: _descriptionController,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: "Enter Course Description",
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 6),
+              const Text("Name"),
+              const SizedBox(height: 6),
+              TextField(
+                controller: _titleController,
+                decoration: InputDecoration(
+                  hintText: "Enter Course name",
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            const Text("Image"),
-            const SizedBox(height: 8),
-            _buildImageWidget(),
+              const SizedBox(height: 16),
+              const Text("Description"),
+              const SizedBox(height: 6),
+              TextField(
+                controller: _descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: "Enter Course Description",
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text("Image"),
+              const SizedBox(height: 8),
+              _buildImageWidget(),
 
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.primary,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.primary,
                         ),
-                      ),
-                    ),
-                    onPressed: _isUploading ? null : _handleUpdate,
-                    child: _isUploading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text(
-                            "Update",
-                            style: TextStyle(color: Colors.white),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.tertiary,
-                      ),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
                         ),
                       ),
-                    ),
-                    onPressed: _isUploading
-                        ? null
-                        : () {
-                            Navigator.pop(context);
-                          },
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.white),
+                      onPressed: _isUploading ? null : _handleUpdate,
+                      child: _isUploading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              "Update",
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-          ],
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Theme.of(context).colorScheme.tertiary,
+                        ),
+                        shape: WidgetStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                      onPressed: _isUploading
+                          ? null
+                          : () {
+                              Navigator.pop(context);
+                            },
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
         ),
       ),
     );

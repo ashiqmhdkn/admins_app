@@ -8,6 +8,9 @@ class AdminVideoSelectionCard extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
+  final bool isEnabled;
+  final ValueChanged<bool> onToggle;
+
   const AdminVideoSelectionCard({
     super.key,
     required this.onTap,
@@ -16,43 +19,45 @@ class AdminVideoSelectionCard extends StatelessWidget {
     required this.imagelocation,
     required this.onEdit,
     required this.onDelete,
+    required this.isEnabled,
+    required this.onToggle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Padding(
-      padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: InkWell(
+        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
-        child: Stack(
-          children: [
-            Container(
-              height: 100,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.tertiary,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
+        child: Container(
+          height: 100,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.tertiary,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Stack(
+            children: [
+              Row(
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8),
-                    child: Container(
-                      height: 80,
-                      width: 130,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(imagelocation, fit: BoxFit.cover),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        imagelocation,
+                        height: 80,
+                        width: 130,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.only(top: 12, right: 40),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -75,45 +80,48 @@ class AdminVideoSelectionCard extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-
-            Positioned(
-              top: 0,
-              right: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildActionButton(icon: Icons.edit, onTap: onEdit),
-                    Container(
-                      height: 24,
-                      width: 1,
-                      color: Colors.white.withOpacity(0.5),
+              Positioned(
+                top: 4,
+                right: 4,
+                child: PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert),
+                  onSelected: (value) {
+                    if (value == 'edit') {
+                      onEdit();
+                    } else if (value == 'delete') {
+                      onDelete();
+                    } else if (value == 'toggle') {
+                      onToggle(!isEnabled);
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: ListTile(
+                        leading: Icon(Icons.edit),
+                        title: Text('Edit'),
+                      ),
                     ),
-                    _buildActionButton(icon: Icons.delete, onTap: onDelete),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: ListTile(
+                        leading: Icon(Icons.delete),
+                        title: Text('Delete'),
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'toggle',
+                      child: ListTile(
+                        leading: Icon(isEnabled ? Icons.lock_open : Icons.lock),
+                        title: Text(isEnabled ? 'Disable' : 'Enable'),
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-        child: Icon(icon, size: 20, color: Colors.white),
       ),
     );
   }

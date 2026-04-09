@@ -25,7 +25,12 @@ class AcceptedCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Row(
           children: [
-            CircleAvatar(radius: 26),
+            CircleAvatar(
+              radius: 28,
+              backgroundImage: (student.profileImage.isNotEmpty)
+                  ? NetworkImage(student.profileImage)
+                  : const AssetImage('lib/assets/image.png') as ImageProvider,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

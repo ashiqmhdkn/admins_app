@@ -99,103 +99,106 @@ class _AddCoursePageState extends State<AddCoursePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
+    return SafeArea(
+      top: false,
+      child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        surfaceTintColor: Colors.transparent,
-        elevation: 0,
-        title: const Customboldtext(text: 'Add Course', fontValue: 18),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
-          child: _StepIndicator(
-            current: _currentStep,
-            total: _totalSteps,
-            onTap: _animateTo,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.surface,
+          surfaceTintColor: Colors.transparent,
+          elevation: 0,
+          title: const Customboldtext(text: 'Add Course', fontValue: 18),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(56),
+            child: _StepIndicator(
+              current: _currentStep,
+              total: _totalSteps,
+              onTap: _animateTo,
+            ),
           ),
         ),
-      ),
-      body: PageView(
-        controller: _pageController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          _Step1BasicInfo(
-            formKey: _basicFormKey,
-            titleCtrl: _titleCtrl,
-            subtitleCtrl: _subtitleCtrl,
-            bannerCtrl: _bannerCtrl,
-            languageTag: _languageTag,
-            categoryTag: _categoryTag,
-            onLanguageChanged: (v) => setState(() => _languageTag = v!),
-            onCategoryChanged: (v) => setState(() => _categoryTag = v!),
-          ),
-          _Step2Dates(
-            batchStartDate: _batchStartDate,
-            enrollmentEndDate: _enrollmentEndDate,
-            onBatchStartPicked: (d) => setState(() => _batchStartDate = d),
-            onEnrollmentEndPicked: (d) =>
-                setState(() => _enrollmentEndDate = d),
-          ),
-          _Step3Educators(
-            educators: _educators,
-            onAdd: () => setState(() => _educators.add(_EducatorEntry())),
-            onRemove: (i) => setState(() => _educators.removeAt(i)),
-          ),
-          _Step4AboutStats(
-            formKey: _aboutFormKey,
-            descCtrl: _descCtrl,
-            highlightCtrl: _highlightCtrl,
-            highlights: _highlights,
-            liveClassesCtrl: _liveClassesCtrl,
-            langCtrl: _langCtrl,
-            teachingLangs: _teachingLangs,
-            onAddHighlight: () {
-              final v = _highlightCtrl.text.trim();
-              if (v.isNotEmpty) {
-                setState(() {
-                  _highlights.add(v);
-                  _highlightCtrl.clear();
-                });
-              }
-            },
-            onRemoveHighlight: (i) => setState(() => _highlights.removeAt(i)),
-            onAddLang: () {
-              final v = _langCtrl.text.trim();
-              if (v.isNotEmpty) {
-                setState(() {
-                  _teachingLangs.add(v);
-                  _langCtrl.clear();
-                });
-              }
-            },
-            onRemoveLang: (i) => setState(() => _teachingLangs.removeAt(i)),
-          ),
-          _Step5Pricing(
-            formKey: _pricingFormKey,
-            priceCtrl: _priceCtrl,
-            currency: _currency,
-            isFree: _isFree,
-            isEnrolled: _isEnrolled,
-            onCurrencyChanged: (v) => setState(() => _currency = v!),
-            onIsFreeChanged: (v) => setState(() => _isFree = v ?? false),
-            onIsEnrolledChanged: (v) =>
-                setState(() => _isEnrolled = v ?? false),
-          ),
-        ],
-      ),
-      bottomNavigationBar: _BottomNav(
-        currentStep: _currentStep,
-        totalSteps: _totalSteps,
-        onBack: _currentStep > 0 ? () => _animateTo(_currentStep - 1) : null,
-        onNext: () {
-          if (!_validateCurrentStep()) return;
-          if (_currentStep < _totalSteps - 1) {
-            _animateTo(_currentStep + 1);
-          } else {
-            _submit();
-          }
-        },
-        isLast: _currentStep == _totalSteps - 1,
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            _Step1BasicInfo(
+              formKey: _basicFormKey,
+              titleCtrl: _titleCtrl,
+              subtitleCtrl: _subtitleCtrl,
+              bannerCtrl: _bannerCtrl,
+              languageTag: _languageTag,
+              categoryTag: _categoryTag,
+              onLanguageChanged: (v) => setState(() => _languageTag = v!),
+              onCategoryChanged: (v) => setState(() => _categoryTag = v!),
+            ),
+            _Step2Dates(
+              batchStartDate: _batchStartDate,
+              enrollmentEndDate: _enrollmentEndDate,
+              onBatchStartPicked: (d) => setState(() => _batchStartDate = d),
+              onEnrollmentEndPicked: (d) =>
+                  setState(() => _enrollmentEndDate = d),
+            ),
+            _Step3Educators(
+              educators: _educators,
+              onAdd: () => setState(() => _educators.add(_EducatorEntry())),
+              onRemove: (i) => setState(() => _educators.removeAt(i)),
+            ),
+            _Step4AboutStats(
+              formKey: _aboutFormKey,
+              descCtrl: _descCtrl,
+              highlightCtrl: _highlightCtrl,
+              highlights: _highlights,
+              liveClassesCtrl: _liveClassesCtrl,
+              langCtrl: _langCtrl,
+              teachingLangs: _teachingLangs,
+              onAddHighlight: () {
+                final v = _highlightCtrl.text.trim();
+                if (v.isNotEmpty) {
+                  setState(() {
+                    _highlights.add(v);
+                    _highlightCtrl.clear();
+                  });
+                }
+              },
+              onRemoveHighlight: (i) => setState(() => _highlights.removeAt(i)),
+              onAddLang: () {
+                final v = _langCtrl.text.trim();
+                if (v.isNotEmpty) {
+                  setState(() {
+                    _teachingLangs.add(v);
+                    _langCtrl.clear();
+                  });
+                }
+              },
+              onRemoveLang: (i) => setState(() => _teachingLangs.removeAt(i)),
+            ),
+            _Step5Pricing(
+              formKey: _pricingFormKey,
+              priceCtrl: _priceCtrl,
+              currency: _currency,
+              isFree: _isFree,
+              isEnrolled: _isEnrolled,
+              onCurrencyChanged: (v) => setState(() => _currency = v!),
+              onIsFreeChanged: (v) => setState(() => _isFree = v ?? false),
+              onIsEnrolledChanged: (v) =>
+                  setState(() => _isEnrolled = v ?? false),
+            ),
+          ],
+        ),
+        bottomNavigationBar: _BottomNav(
+          currentStep: _currentStep,
+          totalSteps: _totalSteps,
+          onBack: _currentStep > 0 ? () => _animateTo(_currentStep - 1) : null,
+          onNext: () {
+            if (!_validateCurrentStep()) return;
+            if (_currentStep < _totalSteps - 1) {
+              _animateTo(_currentStep + 1);
+            } else {
+              _submit();
+            }
+          },
+          isLast: _currentStep == _totalSteps - 1,
+        ),
       ),
     );
   }

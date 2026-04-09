@@ -57,36 +57,39 @@ class _AdminnavState extends State<Adminnav>
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          _pages[_previousIndex],
-          SlideTransition(
-            position: _slideAnimation,
-            child: _pages[_currentIndex],
-          ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        color: colorScheme.surface,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: GNav(
-          selectedIndex: _currentIndex,
-          onTabChange: _onTabChange,
-          gap: 8,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          tabBorderRadius: 16,
-          activeColor: colorScheme.onPrimary,
-          tabBackgroundColor: colorScheme.primary,
-          color: colorScheme.secondary,
-          tabs: const [
-            GButton(icon: Icons.home, text: 'Home'),
-            GButton(icon: Icons.book_outlined, text: 'Courses'),
-            GButton(icon: Icons.person, text: 'Staff'),
-            GButton(icon: Icons.monetization_on, text: 'Payments'),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            _pages[_previousIndex],
+            SlideTransition(
+              position: _slideAnimation,
+              child: _pages[_currentIndex],
+            ),
           ],
+        ),
+        bottomNavigationBar: Container(
+          color: colorScheme.surface,
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          child: GNav(
+            selectedIndex: _currentIndex,
+            onTabChange: _onTabChange,
+            gap: 8,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            tabBorderRadius: 16,
+            activeColor: colorScheme.onPrimary,
+            tabBackgroundColor: colorScheme.primary,
+            color: colorScheme.secondary,
+            tabs: const [
+              GButton(icon: Icons.home, text: 'Home'),
+              GButton(icon: Icons.book_outlined, text: 'Courses'),
+              GButton(icon: Icons.person, text: 'Staff'),
+              GButton(icon: Icons.monetization_on, text: 'Payments'),
+            ],
+          ),
         ),
       ),
     );

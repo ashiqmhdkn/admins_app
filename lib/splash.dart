@@ -57,7 +57,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // set theme according to system
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Column(
@@ -67,12 +66,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             child: CircleAvatar(
               radius: 80,
               backgroundImage: Image.asset('lib/assets/image.png').image,
-            ), // simple splash loader
+            ),
           ),
           SizedBox(height: 10),
-          Customboldtext(
-            text: "A LEGACY OF SUCCESS \n     FOR GENERATIONS",
-            fontValue: 17,
+          Text(
+            "A LEGACY OF SUCCESS FOR GENERATIONS",
+            textAlign: TextAlign.justify,
+            style: TextStyle(
+              fontSize: 18,
+              fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),

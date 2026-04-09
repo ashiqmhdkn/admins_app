@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:learning_admin_app/pages/Batch/widget/batch_course_card.dart';
+import 'package:learning_admin_app/pages/Batch/widget/batch_subject_card.dart';
 import 'package:learning_admin_app/pages/Subjects/edit_subject.dart';
 import 'package:learning_admin_app/provider/subjects_provider.dart';
+
 class SubjectList extends ConsumerStatefulWidget {
   final String courseId;
   const SubjectList({super.key, required this.courseId});
@@ -39,7 +40,7 @@ class _SubjecList extends ConsumerState<SubjectList> {
                 child: SlideAnimation(
                   duration: const Duration(milliseconds: 400),
                   child: FadeInAnimation(
-                    child: BatchCourseCard(
+                    child: BatchSubjectCard(
                       onToggle: (value) {},
                       isEnabled: true,
                       onDelete: () async {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class BatchCourseCard extends StatelessWidget {
+class BatchSubjectCard extends StatelessWidget {
   final String title;
   final String backGroundImage;
   final VoidCallback onTap;
@@ -10,7 +10,7 @@ class BatchCourseCard extends StatelessWidget {
   final bool isEnabled;
   final ValueChanged<bool> onToggle;
 
-  const BatchCourseCard({
+  const BatchSubjectCard({
     super.key,
     required this.title,
     required this.backGroundImage,

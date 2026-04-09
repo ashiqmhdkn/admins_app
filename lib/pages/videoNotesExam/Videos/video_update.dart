@@ -80,7 +80,7 @@ class _VideoUpdateState extends ConsumerState<VideoUpdate> {
           .updateVideo(
             VideoId: widget.videoid,
             title: _titleController.text,
-            description: _descriptionController.text
+            description: _descriptionController.text,
           );
 
       if (!mounted) return;
@@ -167,123 +167,125 @@ class _VideoUpdateState extends ConsumerState<VideoUpdate> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(12, 0, 12, bottomInset + 12),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
-              child: Text(
-                "Update Video",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text("Name"),
-            const SizedBox(height: 6),
-            TextField(
-              controller: _titleController,
-              enabled: !_isUploading,
-              decoration: InputDecoration(
-                hintText: "Enter Video name",
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text("Description"),
-            const SizedBox(height: 6),
-            TextField(
-              controller: _descriptionController,
-              enabled: !_isUploading,
-              maxLines: 3,
-              decoration: InputDecoration(
-                hintText: "Enter Video Description",
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text("Video File"),
-            const SizedBox(height: 8),
-            if (_showExistingThumbnail && widget.imagelocation.isNotEmpty)
-              _networkThumbnail()
-            else if (videoFile != null)
-              _videoPreview()
-            else
-              _pickVideoUI(),
-
-            // --- PROGRESS SECTION ---
-            if (_isUploading) ...[
-              const SizedBox(height: 20),
-              LinearProgressIndicator(
-                value: _uploadProgress,
-                backgroundColor: Colors.grey[200],
-                minHeight: 8,
-                borderRadius: BorderRadius.circular(5),
-              ),
-              const SizedBox(height: 8),
-              Center(
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(12, 0, 12, bottomInset + 12),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Center(
                 child: Text(
-                  "${(_uploadProgress * 100).toStringAsFixed(1)}% Uploaded",
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                  "Update Video",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ),
-            ],
-
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    onPressed: (_isUploading || _isLoadingDuration)
-                        ? null
-                        : _submit,
-                    child: _isUploading
-                        ? const Text(
-                            "Updating...",
-                            style: TextStyle(color: Colors.white),
-                          )
-                        : const Text(
-                            "Update",
-                            style: TextStyle(color: Colors.white),
-                          ),
+              const SizedBox(height: 16),
+              const Text("Name"),
+              const SizedBox(height: 6),
+              TextField(
+                controller: _titleController,
+                enabled: !_isUploading,
+                decoration: InputDecoration(
+                  hintText: "Enter Video name",
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.tertiary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    onPressed: _isUploading
-                        ? null
-                        : () => Navigator.pop(context),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.white),
-                    ),
+              ),
+              const SizedBox(height: 16),
+              const Text("Description"),
+              const SizedBox(height: 6),
+              TextField(
+                controller: _descriptionController,
+                enabled: !_isUploading,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  hintText: "Enter Video Description",
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text("Video File"),
+              const SizedBox(height: 8),
+              if (_showExistingThumbnail && widget.imagelocation.isNotEmpty)
+                _networkThumbnail()
+              else if (videoFile != null)
+                _videoPreview()
+              else
+                _pickVideoUI(),
+
+              // --- PROGRESS SECTION ---
+              if (_isUploading) ...[
+                const SizedBox(height: 20),
+                LinearProgressIndicator(
+                  value: _uploadProgress,
+                  backgroundColor: Colors.grey[200],
+                  minHeight: 8,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                const SizedBox(height: 8),
+                Center(
+                  child: Text(
+                    "${(_uploadProgress * 100).toStringAsFixed(1)}% Uploaded",
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
               ],
-            ),
-          ],
+
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: (_isUploading || _isLoadingDuration)
+                          ? null
+                          : _submit,
+                      child: _isUploading
+                          ? const Text(
+                              "Updating...",
+                              style: TextStyle(color: Colors.white),
+                            )
+                          : const Text(
+                              "Update",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.tertiary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                      ),
+                      onPressed: _isUploading
+                          ? null
+                          : () => Navigator.pop(context),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

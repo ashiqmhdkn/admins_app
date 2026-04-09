@@ -67,100 +67,104 @@ class _EditSubjectState extends ConsumerState<EditSubject> {
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottomInset),
-      child: Container(
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Text(
-                  "Edit Subject",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              const Text("Name"),
-              const SizedBox(height: 6),
-
-              TextField(
-                controller: _titleController,
-                decoration: InputDecoration(
-                  hintText: "Enter Subject name",
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Center(
+                  child: Text(
+                    "Edit Subject",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
+                const SizedBox(height: 16),
 
-              const SizedBox(height: 16),
-              const Text("Image"),
-              const SizedBox(height: 8),
+                const Text("Name"),
+                const SizedBox(height: 6),
 
-              _buildImageWidget(),
+                TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    hintText: "Enter Subject name",
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
 
-              const SizedBox(height: 20),
+                const SizedBox(height: 16),
+                const Text("Image"),
+                const SizedBox(height: 8),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.primary,
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
+                _buildImageWidget(),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(
+                            Theme.of(context).colorScheme.primary,
                           ),
-                        ),
-                      ),
-                      onPressed: _isUploading ? null : _handleUpdate,
-                      child: _isUploading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text(
-                              "Update",
-                              style: TextStyle(color: Colors.white),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: OutlinedButton(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          Theme.of(context).colorScheme.tertiary,
-                        ),
-                        shape: WidgetStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
                           ),
                         ),
-                      ),
-                      onPressed: _isUploading
-                          ? null
-                          : () => Navigator.pop(context),
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(color: Colors.white),
+                        onPressed: _isUploading ? null : _handleUpdate,
+                        child: _isUploading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                "Update",
+                                style: TextStyle(color: Colors.white),
+                              ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton(
+                        style: ButtonStyle(
+                          backgroundColor: WidgetStatePropertyAll(
+                            Theme.of(context).colorScheme.tertiary,
+                          ),
+                          shape: WidgetStatePropertyAll(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                        ),
+                        onPressed: _isUploading
+                            ? null
+                            : () => Navigator.pop(context),
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

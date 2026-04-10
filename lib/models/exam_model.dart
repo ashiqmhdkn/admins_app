@@ -18,14 +18,16 @@ class Exam {
   });
  
   factory Exam.fromJson(Map<String, dynamic> json) {
+    print(json['questions'].toString());
     return Exam(
-      examId: json['exam_id'] as String,
+      examId: json['id'] as String,
       subjectId: json['subject_id'] as String,
       title: json['title'] as String,
       unitId: json['unit_id'] as String,
-      questionModels: (json['questions'] as List)
-          .map((q) => QuestionModel.fromJson(q as Map<String, dynamic>))
-          .toList(),
+       questionModels: (json['questions'] as List<dynamic>?)
+          ?.map((q) => QuestionModel.fromJson(q as Map<String, dynamic>))
+          .toList() 
+      ?? [],
       description: json['description'] as String?,
     );
   }

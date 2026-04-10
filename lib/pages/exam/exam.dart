@@ -1,24 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
+import 'package:learning_admin_app/models/subject_model.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/exam_attend_page.dart';
 import 'package:learning_admin_app/pages/widgets/Cards/exam_card.dart';
+import 'package:learning_admin_app/provider/exam_provider.dart';
 
-class StudentExams extends StatelessWidget {
+class StudentExams extends ConsumerStatefulWidget {
   final String unitId;
   const StudentExams({super.key, required this.unitId});
-
+@override
+  ConsumerState<StudentExams> createState()=>_studentExams();
+}
+class _studentExams extends ConsumerState<StudentExams>{
+  @override 
+  void initState(){
+    super.initState();
+    Future.microtask((){
+      ref.read(ExamProvider.notifier).setunit_id(widget.unitId);
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    final ExamsState=ref.watch(ExamProvider);
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: AnimationLimiter(
-          child: ListView.builder(
-            itemCount: 10,
+          child: ExamsState.when(
+            data: (Exams){
+              if(Exams.isEmpty){
+                return const Center(child: Text("No Exams"),);
+              }
+              return ListView.builder(
+            itemCount: Exams.length,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
+              final Exam=Exams[index];
               return AnimationConfiguration.staggeredList(
                 position: index,
                 duration: const Duration(milliseconds: 400),
@@ -39,14 +59,17 @@ class StudentExams extends StatelessWidget {
                           ),
                         );
                       },
-                      title: "Name ${index + 1}",
-                      subtitle: "Subtitle",
+                      title: Exam.title,
+                      subtitle: Exam.description??"",
                     ),
                   ),
                 ),
               );
             },
-          ),
+          );
+            }
+          , error: (error, stack) => Center(child: Text('Error: $error')), loading: () => const Center(child: const CircularProgressIndicator()),)
+          
         ),
       ),
     );

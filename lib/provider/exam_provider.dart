@@ -1,27 +1,60 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learning_admin_app/api/exam_api.dart';
+import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
-import 'package:learning_admin_app/provider/batch_provider.dart';
+
+final authTokenProvider = FutureProvider<String?>((ref) async {
+  return ref.watch(authControllerProvider.notifier).getToken();
+});
 
 /// AsyncNotifier for creating an exam
-class CreateExamNotifier extends AsyncNotifier<String?> {
+class ExamNotifier extends AsyncNotifier<List<Exam>> {
+  String unitId = "";
+  String subjectId = "";
   @override
-  Future<String?> build() async => null;
+  @override
+Future<List<Exam>> build() async {
+  state = const AsyncValue.loading();
+  final token = await ref.read(authTokenProvider.future);
+  if (unitId.isEmpty && subjectId.isEmpty) {
+    return [];
+  } else if (unitId.isNotEmpty) {
+    return getunitExams(token: token!, unitId: unitId);
+  } else if (subjectId.isNotEmpty) {
+    return getsubjectExams(token: token!, subjectId: subjectId);
+  }
+  return[];
+}
 
-  Future<String?> createExam(Exam exam) async {
-    state = const AsyncLoading();
+  Future<bool> createExam(Exam exam) async {
     final token = await ref.read(authTokenProvider.future);
 
-    state = await AsyncValue.guard(
-      () => createQuiz(token: token!, exam: exam),
-    );
+    try {
+      final success = await createQuiz(token: token!, exam: exam);
+      if (success) {
+        state = await AsyncValue.guard(() async {
+          if (unitId.isEmpty && subjectId.isEmpty) {
+            return [];
+          } else if (unitId.isNotEmpty) {
+            return await getunitExams(token: token!, unitId: unitId);
+          } else {
+            return await getsubjectExams(token: token!, subjectId: subjectId);
+          }
+        });
+      }
+      return success;
+    } catch (e) {
+      return false;
+    }
+  }
 
-    return state.value;
+  void setunit_id(String unit) {
+    unitId = unit;
+    ref.invalidateSelf();
   }
 }
 
-
-final createExamProvider =
-    AsyncNotifierProvider<CreateExamNotifier, String?>(
-  () => CreateExamNotifier(),
+/// AsyncNotifier for creating an exa
+final ExamProvider = AsyncNotifierProvider<ExamNotifier,List<Exam>>(
+  () => ExamNotifier(),
 );

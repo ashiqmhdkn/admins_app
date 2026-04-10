@@ -93,7 +93,7 @@ Future<bool> coursesPut({
   required String description,
   required String? courseImage,
 }) async {
-  final uri = Uri.parse('$baseUrl/courses?course_id=$courseId');
+  final uri = Uri.parse('$baseUrl/courses');
   try {
     final request = http.MultipartRequest('PUT', uri)
       ..fields['course_id'] = courseId

@@ -91,7 +91,7 @@ class _QuizReviewPage extends ConsumerState<QuizReviewPage>{
             Center(
               child: Custombuttonone(text: "Submit", onTap: ()async{
                 final examId = await ref
-              .read(createExamProvider.notifier)
+              .read(ExamProvider.notifier)
               .createExam(widget.exam);
                 if (examId != null) {          
                   print("exam udpat null");

@@ -48,12 +48,13 @@ class _studentExams extends ConsumerState<StudentExams>{
                     child: ExamListTile(
                       isEnabled: true,
                       onToggle: (value) {},
-                      onStartExam: () {
+                      onStartExam: () async{
+                       final List<QuestionModel> quesitons= await ref.read(ExamProvider.notifier).questions(Exam.examId);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => ExamAttemptPage(
-                              exam: _buildExam(),
+                              exam: _buildExam(Exam,quesitons),
                               studentId: "",
                             ),
                           ),
@@ -76,74 +77,13 @@ class _studentExams extends ConsumerState<StudentExams>{
   }
 }
 
-Exam _buildExam() {
+Exam _buildExam(Exam exam,List<QuestionModel> questions) {
   return Exam(
-    examId: "1",
-    title: "Reverend Insanity — Fang Yuan Arc",
-    description: "Test your knowledge of the demon Gu Master's journey.",
-    unitId: " unitId",
-    subjectId: "demo_subject",
-    questionModels: getReverendInsanityQuestions(),
+    examId: exam.examId,
+    title: exam.title,
+    description: exam.description,
+    unitId: exam.unitId,
+    subjectId: exam.subjectId,
+    questionModels: questions,
   );
-}
-
-List<QuestionModel> getReverendInsanityQuestions() {
-  return [
-    // 1. Short Answer
-    QuestionModel(
-      questionId: "1",
-      type: QuestionType.shortAnswer,
-      title: "What is Fang Yuan's primary goal throughout Reverend Insanity?",
-      description: "State his ultimate ambition in a few words.",
-      marks: 2,
-      isRequired: true,
-    ),
-
-    // 2. Multiple Choice (single correct)
-    QuestionModel(
-      questionId: "2",
-      type: QuestionType.multipleChoice,
-      title:
-          "Which Gu does Fang Yuan obtain at the beginning of the story that sets him apart?",
-      description: "Choose the correct Gu worm.",
-      marks: 3,
-      isRequired: true,
-      options: [
-        "Spring Autumn Cicada",
-        "Moonlight Gu",
-        "Rank 6 Immortal Gu",
-        "Blood Python Gu",
-      ],
-      correctOptionIndexes: [0],
-    ),
-
-    // 3. Multiple Choice (multi correct)
-    QuestionModel(
-      questionId: "3",
-      type: QuestionType.multipleChoice,
-      title:
-          "Which of the following accurately describe Fang Yuan's personality?",
-      description: "Select all that apply.",
-      marks: 4,
-      isRequired: true,
-      options: [
-        "Ruthlessly rational",
-        "Compassionate toward allies",
-        "Self-serving above all else",
-        "Willing to sacrifice anyone for his goals",
-      ],
-      correctOptionIndexes: [0, 2, 3],
-    ),
-
-    // 4. Long Answer
-    QuestionModel(
-      questionId: "4",
-      type: QuestionType.longAnswer,
-      title:
-          "Explain how Fang Yuan uses his 500 years of future knowledge after rebirth.",
-      description: "Describe his strategy in the early arcs.",
-      marks: 5,
-      isRequired: false,
-    ),
-  ];
 }

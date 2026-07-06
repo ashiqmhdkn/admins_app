@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:learning_admin_app/models/exam_model.dart';
+import 'package:learning_admin_app/models/question_model.dart';
 import 'package:tusc/tusc.dart';
 
 const String baseUrl = 'https://api.crescentlearning.org';
@@ -16,6 +17,7 @@ Future<bool> createQuiz({
 }) async {
   try {
     final uri = Uri.parse('$baseUrl/exam');
+    
     final response = await http.post(
       uri,
       headers: {
@@ -92,4 +94,31 @@ Future<List<Exam>> getsubjectExams({
      throw Exception("Failed to fetch Exams: ${response.body}");
     }
     }
+
+  Future<List<QuestionModel>> getQuestions({
+    required String token,
+    required String examId,
+  }) async {
+    final url = Uri.parse(
+      "$baseUrl/exam?exam_id=$examId",
+    );
+
+      final response = await http.get(
+        url,
+        headers: {
+          ..._headers(token),
+          'Content-Type': 'application/json',
+                  },
+      );
+
+      final data = jsonDecode(response.body);
+      print(data);
+       if (response.statusCode == 200) {
+        final List list = data["questions"] ?? [];
+        return list.map((e)=>QuestionModel.fromJson(e)).toList(); 
+    } 
+    else{
+     throw Exception("Failed to fetch Exam questions: ${response.body}");
+    }
+  }
 

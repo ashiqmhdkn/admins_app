@@ -13,7 +13,7 @@ class QuestionModel {
    List<int> correctOptionIndexes;
 
   QuestionModel({
-    required this.questionId,
+     required this.questionId,
     required this.type,
     this.imagePath,
     this.title = '',
@@ -28,10 +28,10 @@ class QuestionModel {
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
-      questionId: json['question_id'] as String,
+      questionId: json['question_id'].toString(),
       type: QuestionType.values.firstWhere((e) => e.name == json['type']),
       title: json['title'] as String? ?? '',
-      imagePath: json['image_path'] as String?,
+      imagePath: json['imagePath']?.toString(),
       description: json['description'] as String? ?? '',
       answer: json['answer'] as String? ?? '',
       marks: json['marks'] as int? ?? 1,

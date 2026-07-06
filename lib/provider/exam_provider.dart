@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart';
 import 'package:learning_admin_app/api/exam_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
+import 'package:learning_admin_app/models/question_model.dart';
 
 final authTokenProvider = FutureProvider<String?>((ref) async {
   return ref.watch(authControllerProvider.notifier).getToken();
@@ -46,6 +48,11 @@ Future<List<Exam>> build() async {
     } catch (e) {
       return false;
     }
+  }
+  Future<List<QuestionModel>> questions(String examId)async{
+        final token = await ref.read(authTokenProvider.future);
+        return await getQuestions(token: token!, examId: examId);
+
   }
 
   void setunit_id(String unit) {

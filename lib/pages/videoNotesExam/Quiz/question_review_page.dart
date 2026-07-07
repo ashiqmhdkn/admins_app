@@ -93,9 +93,6 @@ class _QuizReviewPage extends ConsumerState<QuizReviewPage>{
                 final examId = await ref
               .read(ExamProvider.notifier)
               .createExam(widget.exam);
-                if (examId != null) {          
-                  print("exam udpat null");
-                }
               }),
             )
           ],

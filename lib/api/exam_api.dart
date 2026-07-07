@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:learning_admin_app/api/exam_image.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
-import 'package:tusc/tusc.dart';
 
 const String baseUrl = 'https://api.crescentlearning.org';
 
@@ -15,9 +15,20 @@ Future<bool> createQuiz({
   required String token,
   required Exam exam,
 }) async {
-  try {
+  // try {
+    // print("URL = ${data['url']}");
+    // exam.questionModels[0].imagePath = "TEST_URL";
+    // print("Image = ${exam.questionModels[0].imagePath}");
+    exam=await createExamImage(token: token, exam: exam);
+    final QuestionModel question = exam.questionModels[0];
+    print(" Exam ID: ${question.imagePath}");
+    print("Questions: ${exam.questionModels.length}");
+    print("Question ID: ${exam.questionModels[0].questionId}");
+    print("Image Path: ${exam.questionModels[0].imagePath}");
+    print("Title: ${exam.questionModels[0].title}");
+    try{
     final uri = Uri.parse('$baseUrl/exam');
-    
+    print("Creating quiz ");
     final response = await http.post(
       uri,
       headers: {
@@ -28,20 +39,45 @@ Future<bool> createQuiz({
     );
 
     print("Creating quiz...");
-    if (response.statusCode == 201) {
+    if (response.statusCode==201) {
       final Map<String, dynamic> data = jsonDecode(response.body);
       if (data['success'] == true) {
         return true;
       }
       return false;
-    } else {
+    }
+     else {
       throw Exception("Failed to create quiz: ${response.statusCode}");
     }
+    // return true; // Assuming the quiz creation is successful for now
   } catch (e) {
     print("Create Quiz Error: $e");
     return false;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Future<List<Exam>> getsubjectExams({
     required String token,
     required String subjectId,

@@ -558,6 +558,7 @@ class QuestionAttemptCard extends StatelessWidget {
   final QuestionResponse response;
   final int questionNumber;
   final void Function(QuestionResponse updated) onUpdate;
+ 
 
   const QuestionAttemptCard({
     super.key,
@@ -569,6 +570,7 @@ class QuestionAttemptCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //  print("question image $question");
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Card(
@@ -631,10 +633,11 @@ class QuestionAttemptCard extends StatelessWidget {
               ),
               if (question.imagePath != null) ...[
                 const SizedBox(height: 14),
+                // Text(question.imagePath!),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Image.file(
-                    File(question.imagePath!),
+                  child: Image.network(
+                    question.imagePath!,
                     height: 160,
                     width: double.infinity,
                     fit: BoxFit.cover,

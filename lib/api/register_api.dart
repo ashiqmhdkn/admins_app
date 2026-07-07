@@ -10,7 +10,6 @@ Future<String> registerApi({
 }) async {
   final primaryUrl = 'https://api.crescentlearning.org';
   final uri = Uri.parse('$primaryUrl/signup');
-
   final response = await http.post(
     uri,
     headers: {

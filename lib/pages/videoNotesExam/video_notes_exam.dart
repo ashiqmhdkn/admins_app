@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:learning_admin_app/pages/exam/exam.dart';
+import 'package:learning_admin_app/pages/exam/exam_course_edit.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Quiz/quiz_creation.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Notes/add_note.dart';
 import 'package:learning_admin_app/pages/videoNotesExam/Videos/add_video.dart';
@@ -117,7 +118,7 @@ class _AdminVide0NotesExamState extends State<VideoNotesExam> {
               unitName: widget.unitName,
               unit_id: widget.unitId,
             ),
-            StudentExams(unitId: widget.unitId),
+            ExamCourseEdit(unitId: widget.unitId),
             AdminSubjectNotes(unitId: widget.unitId),
           ],
         ),

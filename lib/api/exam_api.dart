@@ -57,6 +57,43 @@ Future<bool> createQuiz({
 }
 
 
+Future<bool> examDelete({
+  required String token,
+  required String examId,
+}) async {
+  final uri = Uri.parse('$baseUrl/exam');
+
+  try {
+    final res = await http.delete(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json', // IMPORTANT
+      },
+      body: jsonEncode({"exam_id": examId}),
+    );
+
+    print("DELETE Status: ${res.statusCode}");
+    print("DELETE Body: ${res.body}");
+
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      return data['success'] == true;
+    } else if (res.statusCode == 404) {
+      print("Exam not found");
+      return false;
+    } else {
+      print("Server error: ${res.statusCode}");
+      return false;
+    }
+  } catch (e) {
+    print('Error in examDelete: $e');
+    return false;
+  }
+}
+
+
 
 
 

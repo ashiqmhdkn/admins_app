@@ -14,7 +14,6 @@ class ExamNotifier extends AsyncNotifier<List<Exam>> {
   String unitId = "";
   String subjectId = "";
   @override
-  @override
 Future<List<Exam>> build() async {
   state = const AsyncValue.loading();
   final token = await ref.read(authTokenProvider.future);
@@ -53,6 +52,32 @@ Future<List<Exam>> build() async {
         final token = await ref.read(authTokenProvider.future);
         return await getQuestions(token: token!, examId: examId);
 
+  }
+  Future<bool> deleteExam({required String examId}) async {
+    final token = await ref.read(authTokenProvider.future);
+
+    try {
+      final success = await examDelete(token: token!, examId: examId);
+
+      if (success) {
+        state = const AsyncValue.loading();
+        state = await AsyncValue.guard(
+          () async {
+            if (unitId.isEmpty && subjectId.isEmpty) {
+              return [];
+            } else if (unitId.isNotEmpty) {
+              return await getunitExams(token: token!, unitId: unitId);
+            } else {
+              return await getsubjectExams(token: token!, subjectId: subjectId);
+            }
+          },
+        );
+      }
+
+      return success;
+    } catch (e) {
+      return false;
+    }
   }
 
   void setunit_id(String unit) {

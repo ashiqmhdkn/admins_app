@@ -42,16 +42,17 @@ try{
       print("Before = ${exam.questionModels[i].imagePath}");
       exam.questionModels[i].imagePath = data['url']?.toString();
       print("After = ${exam.questionModels[i].imagePath}");
+       return exam;
     }
     else{
   final error = await response.stream.bytesToString();
   print("Upload failed");
   print(response.statusCode);
   print(error);
-
+  // return exam;
     }
   }
-  return exam;
+  return exam; // Return the exam even if no images were uploaded
 }catch(e){
   print("Create Exam Image Error: $e");
   return exam;

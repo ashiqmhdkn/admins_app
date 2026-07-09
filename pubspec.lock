@@ -57,14 +57,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.13.0"
-  better_player:
+  better_player_plus:
     dependency: "direct main"
     description:
-      name: better_player
-      sha256: fc8883218ab7a2fd7e916956c1f59b5c26c3cab1e4dfd6f051901f5e4da39619
+      name: better_player_plus
+      sha256: "133e212e68ce830d0fa72da02efe597571a9915b526927fa3b427c70dea64613"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.84"
+    version: "1.2.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -302,6 +302,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -340,10 +345,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_widget_from_html_core
-      sha256: b1048fd119a14762e2361bd057da608148a895477846d6149109b2151d2f7abf
+      sha256: "7ff010b116f6abc16429923e616fbc727f3f65ef4cee12ffdb280aeecbc21e7f"
       url: "https://pub.dev"
     source: hosted
-    version: "0.15.2"
+    version: "0.17.2"
   freezed_annotation:
     dependency: transitive
     description:
@@ -1078,7 +1083,7 @@ packages:
     source: hosted
     version: "3.1.5"
   uuid:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: uuid
       sha256: "1fef9e8e11e2991bb773070d4656b7bd5d850967a2456cfc83cf47925ba79489"
@@ -1255,4 +1260,4 @@ packages:
     version: "2.2.4"
 sdks:
   dart: ">=3.11.3 <4.0.0"
-  flutter: ">=3.38.4"
+  flutter: ">=3.41.0"

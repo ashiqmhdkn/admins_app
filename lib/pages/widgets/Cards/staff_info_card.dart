@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:learning_admin_app/models/user_model.dart';
 
 class StaffInfoTile extends StatelessWidget {
-  final String name;
-  final String role;
+  final User user;
   final VoidCallback onTap;
-  const StaffInfoTile({
-    super.key,
-    required this.name,
-    required this.role,
-    required this.onTap,
-  });
+  const StaffInfoTile({super.key, required this.user, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +20,9 @@ class StaffInfoTile extends StatelessWidget {
             child: ListTile(
               leading: CircleAvatar(
                 radius: 25,
-                backgroundImage: AssetImage("lib/assets/image.png"),
+                backgroundImage: NetworkImage(user.image!),
               ),
-              title: Text(name),
+              title: Text(user.username),
             ),
           ),
         ),

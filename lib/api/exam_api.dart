@@ -11,42 +11,39 @@ Map<String, String> _headers(String token) => {
   "Authorization": "Bearer $token",
 };
 
-Future<bool> createQuiz({
-  required String token,
-  required Exam exam,
-}) async {
+Future<bool> createQuiz({required String token, required Exam exam}) async {
   // try {
-    // print("URL = ${data['url']}");
-    // exam.questionModels[0].imagePath = "TEST_URL";
-    // print("Image = ${exam.questionModels[0].imagePath}");
-    exam=await createExamImage(token: token, exam: exam);
-    final QuestionModel question = exam.questionModels[0];
-    print(" Exam ID: ${question.imagePath}");
-    print("Questions: ${exam.questionModels.length}");
-    print("Question ID: ${exam.questionModels[0].questionId}");
-    print("Image Path: ${exam.questionModels[0].imagePath}");
-    print("Title: ${exam.questionModels[0].title}");
-    try{
+  // print("URL = ${data['url']}");
+  // exam.questionModels[0].imagePath = "TEST_URL";
+  // print("Image = ${exam.questionModels[0].imagePath}");
+  exam = await createExamImage(token: token, exam: exam);
+  final QuestionModel question = exam.questionModels[0];
+  print(" Exam ID: ${question.imagePath}");
+  print("Questions: ${exam.questionModels.length}");
+  print("Question ID: ${exam.examId}");
+  print("Image Path: ${exam.questionModels[0].imagePath}");
+  print("Title: ${exam.questionModels[0].title}");
+  try {
     final uri = Uri.parse('$baseUrl/exam');
     print("Creating quiz ");
     final response = await http.post(
       uri,
-      headers: {
-        ..._headers(token),
-        'Content-Type': 'application/json',
-      },
+      headers: {..._headers(token), 'Content-Type': 'application/json'},
       body: jsonEncode(exam.toJson()),
     );
-
+    print("object");
+    print(jsonEncode(exam.toJson()));
+    print("imagepath");
+    print(exam.questionModels[0].imagePath);
     print("Creating quiz...");
-    if (response.statusCode==201) {
+    if (response.statusCode == 201) {
       final Map<String, dynamic> data = jsonDecode(response.body);
+      print(data);
       if (data['success'] == true) {
         return true;
       }
       return false;
-    }
-     else {
+    } else {
       throw Exception("Failed to create quiz: ${response.statusCode}");
     }
     // return true; // Assuming the quiz creation is successful for now
@@ -56,11 +53,7 @@ Future<bool> createQuiz({
   }
 }
 
-
-Future<bool> examDelete({
-  required String token,
-  required String examId,
-}) async {
+Future<bool> examDelete({required String token, required String examId}) async {
   final uri = Uri.parse('$baseUrl/exam');
 
   try {
@@ -93,105 +86,65 @@ Future<bool> examDelete({
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Future<List<Exam>> getsubjectExams({
-    required String token,
-    required String subjectId,
-  }) async {
-    final url = Uri.parse(
-      "$baseUrl/exam/all?subject_id=$subjectId",
-    );
-      final response = await http.get(
-        url,
-        headers: {
-          ..._headers(token),
-          'Content-Type': 'application/json',
-        },
-      );
+  required String token,
+  required String subjectId,
+}) async {
+  final url = Uri.parse("$baseUrl/exam/all?subject_id=$subjectId");
+  final response = await http.get(
+    url,
+    headers: {..._headers(token), 'Content-Type': 'application/json'},
+  );
 
-      final data = jsonDecode(response.body);
-      print(data);
+  final data = jsonDecode(response.body);
+  print(data);
 
-      if (response.statusCode == 200) {
-        final List list = data["exams"] ?? [];
-        return list.map((e)=>Exam.fromJson(e)).toList(); 
-    } 
-    else{
-     throw Exception("Failed to fetch Exams: ${response.body}");
-    }
+  if (response.statusCode == 200) {
+    final List list = data["exams"] ?? [];
+    return list.map((e) => Exam.fromJson(e)).toList();
+  } else {
+    throw Exception("Failed to fetch Exams: ${response.body}");
   }
-  Future<List<Exam>> getunitExams({
-    required String token,
-    required String unitId,
-  }) async {
-    final url = Uri.parse(
-      "$baseUrl/exam/all?unit_id=$unitId",
-    );
+}
 
-      final response = await http.get(
-        url,
-        headers: {
-          ..._headers(token),
-          'Content-Type': 'application/json',
-                  },
-      );
+Future<List<Exam>> getunitExams({
+  required String token,
+  required String unitId,
+}) async {
+  final url = Uri.parse("$baseUrl/exam/all?unit_id=$unitId");
 
-      final data = jsonDecode(response.body);
-      print(data);
-       if (response.statusCode == 200) {
-        final List list = data["exams"] ?? [];
-        return list.map((e)=>Exam.fromJson(e)).toList(); 
-    } 
-    else{
-     throw Exception("Failed to fetch Exams: ${response.body}");
-    }
-    }
+  final response = await http.get(
+    url,
+    headers: {..._headers(token), 'Content-Type': 'application/json'},
+  );
 
-  Future<List<QuestionModel>> getQuestions({
-    required String token,
-    required String examId,
-  }) async {
-    final url = Uri.parse(
-      "$baseUrl/exam?exam_id=$examId",
-    );
-
-      final response = await http.get(
-        url,
-        headers: {
-          ..._headers(token),
-          'Content-Type': 'application/json',
-                  },
-      );
-
-      final data = jsonDecode(response.body);
-      print(data);
-       if (response.statusCode == 200) {
-        final List list = data["questions"] ?? [];
-        return list.map((e)=>QuestionModel.fromJson(e)).toList(); 
-    } 
-    else{
-     throw Exception("Failed to fetch Exam questions: ${response.body}");
-    }
+  final data = jsonDecode(response.body);
+  print(data);
+  if (response.statusCode == 200) {
+    final List list = data["exams"] ?? [];
+    return list.map((e) => Exam.fromJson(e)).toList();
+  } else {
+    throw Exception("Failed to fetch Exams: ${response.body}");
   }
+}
 
+Future<List<QuestionModel>> getQuestions({
+  required String token,
+  required String examId,
+}) async {
+  final url = Uri.parse("$baseUrl/exam?exam_id=$examId");
+
+  final response = await http.get(
+    url,
+    headers: {..._headers(token), 'Content-Type': 'application/json'},
+  );
+
+  final data = jsonDecode(response.body);
+  print(data);
+  if (response.statusCode == 200) {
+    final List list = data["questions"] ?? [];
+    return list.map((e) => QuestionModel.fromJson(e)).toList();
+  } else {
+    throw Exception("Failed to fetch Exam questions: ${response.body}");
+  }
+}

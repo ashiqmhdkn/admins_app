@@ -1,108 +1,70 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:go_router/go_router.dart';
-import 'package:learning_admin_app/pages/widgets/staff_list.dart';
+import 'package:learning_admin_app/pages/widgets/Cards/staff_info_card.dart';
+import 'package:learning_admin_app/provider/users_provider.dart';
 
-class AdminStaff extends StatefulWidget {
+class AdminStaff extends ConsumerWidget {
   const AdminStaff({super.key});
 
   @override
-  State<AdminStaff> createState() => _AdminStaffState();
-}
-
-class _AdminStaffState extends State<AdminStaff> {
-  int _selectedIndex = 0;
-  late final PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: _selectedIndex);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-
+    final userAsync=ref.watch(UsersNotifierProvider);
     return Scaffold(
       backgroundColor: colorScheme.surface,
       appBar: AppBar(
         title: Text(
-          "Staff",
+          "Students",
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
             onPressed: () async {
-              context.push('/profile/Vaishnav');
+              context.push('/profile/Admin');
             },
             icon: CircleAvatar(
               backgroundImage: AssetImage("lib/assets/image.png"),
             ),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: CustomSlidingSegmentedControl<int>(
-                initialValue: _selectedIndex,
-                children: const {
-                  0: const Text("Teachers"),
-
-                  1: const Text("Mentors"),
-                  2: const Text("Coordinator"),
-                  3: const Text("Collaborator"),
-                },
-                decoration: BoxDecoration(
-                  color: colorScheme.surface,
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                ),
-                thumbDecoration: BoxDecoration(
-                  color: colorScheme.primary,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                onValueChanged: (value) {
-                  setState(() {
-                    _selectedIndex = value;
-                  });
-
-                  _pageController.animateToPage(
-                    value,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
-              ),
-            ),
-          ),
-        ),
       ),
-      body: PageView(
-        controller: _pageController,
-        physics: const BouncingScrollPhysics(),
-        onPageChanged: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+      body:  userAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stackTrace) => Center(child: Text("Error: $error")),
+        data: (users) {
+          if(users.isEmpty){
+            return const Center(child: Text("No Users Available"));
+          }
+          return AnimationLimiter(
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                final user = users[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  child: AnimationConfiguration.staggeredList(
+                    position: index,
+                    child: SlideAnimation(
+                      duration: const Duration(milliseconds: 400),
+                      child: FadeInAnimation(
+                        child: StaffInfoTile(
+                          user: user,
+                          onTap: () {
+                            context.push("/profile/${user.username}", extra: user);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
         },
-        children: [
-          AdminStaffList(role: "Teacher"),
-  AdminStaffList(role: "Mentor"),
-  AdminStaffList(role: "Coordinator"),
-  AdminStaffList(role: "Collaborator"),
-        ],
       ),
     );
   }

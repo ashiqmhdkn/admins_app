@@ -142,7 +142,7 @@ Future<bool> coursesDelete({
         'Accept': 'application/json',
         'Content-Type': 'application/json', // IMPORTANT
       },
-      body: jsonEncode({"id": courseId}),
+      body: '{"id": "$courseId"}',
     );
 
     print("DELETE Status: ${res.statusCode}");

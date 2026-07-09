@@ -4,6 +4,7 @@ import 'package:learning_admin_app/api/exam_api.dart';
 import 'package:learning_admin_app/controller/auth_controller.dart';
 import 'package:learning_admin_app/models/exam_model.dart';
 import 'package:learning_admin_app/models/question_model.dart';
+import 'package:uuid/uuid.dart';
 
 final authTokenProvider = FutureProvider<String?>((ref) async {
   return ref.watch(authControllerProvider.notifier).getToken();
@@ -29,8 +30,13 @@ Future<List<Exam>> build() async {
 
   Future<bool> createExam(Exam exam) async {
     final token = await ref.read(authTokenProvider.future);
+    var uuid = const Uuid();
+    String v4Id = uuid.v4(); 
+    print(v4Id); 
+    exam.examId=v4Id;
 
     try {
+      // final success=true;
       final success = await createQuiz(token: token!, exam: exam);
       if (success) {
         state = await AsyncValue.guard(() async {

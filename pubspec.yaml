@@ -28,7 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  better_player: ^0.0.84
+  better_player_plus: ^1.0.8
   cupertino_icons: ^1.0.8
   custom_sliding_segmented_control: ^1.8.5
   file_picker: ^10.3.10
@@ -46,6 +46,8 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^33.1.45
   tusc: ^3.0.0
   video_player: ^2.11.1
+  uuid: ^4.5.0 
+
 
 dev_dependencies:
   flutter_lints: ^6.0.0

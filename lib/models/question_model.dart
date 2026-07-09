@@ -48,7 +48,7 @@ class QuestionModel {
       'question_id': questionId,
       'type': type.name,
       'title': title,
-      'image_path': imagePath,
+      'imagePath': imagePath,
       'description': description,
       'answer': answer,
       'marks': marks,
